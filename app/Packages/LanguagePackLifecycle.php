@@ -87,8 +87,18 @@ final class LanguagePackLifecycle implements PackageLifecycle
         }
 
         $dir = language_dir($code);
-        if (!is_dir($dir) && !mkdir($dir, 0770, true) && !is_dir($dir)) {
+        $baseDir = dirname($dir);
+        if (!is_dir($baseDir) && !@mkdir($baseDir, 0755, true) && !is_dir($baseDir)) {
+            error_log("ERASED CMS: Could not create base language directory for '{$code}'.");
+        }
+        if (is_dir($baseDir)) {
+            @chmod($baseDir, 0755);
+        }
+        if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new RuntimeException("Could not create language directory for '{$code}'.");
+        }
+        if (is_dir($dir)) {
+            @chmod($dir, 0755);
         }
         foreach (['site.json', 'admin.json'] as $file) {
             $source = rtrim($packagePath, '/').'/'.$file;

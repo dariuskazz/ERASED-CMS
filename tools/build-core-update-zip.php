@@ -42,7 +42,7 @@ foreach (array_slice($argv, 3) as $arg) {
 }
 
 $workspace = sys_get_temp_dir().'/erased-build-update-'.bin2hex(random_bytes(6));
-mkdir($workspace, 0750, true);
+mkdir($workspace, 0755, true);
 
 $remove = static function (string $path) use (&$remove): void {
     if (!file_exists($path)) return;
@@ -58,14 +58,16 @@ $remove = static function (string $path) use (&$remove): void {
 
 $copyTree = static function (string $from, string $to) use (&$copyTree): void {
     if (is_file($from)) {
-        @mkdir(dirname($to), 0750, true);
+        @mkdir(dirname($to), 0755, true);
+        @chmod(dirname($to), 0755);
         copy($from, $to);
         return;
     }
     if (!is_dir($from)) {
         return;
     }
-    mkdir($to, 0750, true);
+    mkdir($to, 0755, true);
+    @chmod($to, 0755);
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($from, FilesystemIterator::SKIP_DOTS),
         RecursiveIteratorIterator::SELF_FIRST
@@ -74,9 +76,11 @@ $copyTree = static function (string $from, string $to) use (&$copyTree): void {
         $relative = substr($item->getPathname(), strlen($from) + 1);
         $dest = $to.'/'.$relative;
         if ($item->isDir()) {
-            @mkdir($dest, 0750, true);
+            @mkdir($dest, 0755, true);
+            @chmod($dest, 0755);
         } else {
-            @mkdir(dirname($dest), 0750, true);
+            @mkdir(dirname($dest), 0755, true);
+            @chmod(dirname($dest), 0755);
             copy($item->getPathname(), $dest);
         }
     }
@@ -99,7 +103,7 @@ try {
 
     if ($addMigrationName !== null) {
         $migrationFile = $workspace.'/database/migrations/'.date('YmdHis').'_'.$addMigrationName.'.sql';
-        @mkdir(dirname($migrationFile), 0750, true);
+        @mkdir(dirname($migrationFile), 0755, true);
         file_put_contents(
             $migrationFile,
             "CREATE TABLE IF NOT EXISTS {$addMigrationName} (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n"

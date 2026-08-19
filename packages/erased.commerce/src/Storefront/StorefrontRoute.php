@@ -86,15 +86,15 @@ final class StorefrontRoute
     private function breakdownHtml(int $subtotalMinor, int $discountMinor, ?string $couponCode, int $shippingMinor, int $taxMinor, int $totalMinor, string $currency): string
     {
         $fmt = static fn(int $minor): string => number_format($minor / 100, 2).' '.e($currency);
-        $html = '<p>Subtotal: '.$fmt($subtotalMinor).'</p>';
+        $html = '<p>'.e(tr('subtotal', 'site')).': '.$fmt($subtotalMinor).'</p>';
         if ($discountMinor > 0) {
-            $html .= '<p>Discount'.($couponCode !== null ? ' ('.e($couponCode).')' : '').': -'.$fmt($discountMinor).'</p>';
+            $html .= '<p>'.e(tr('discount', 'site')).($couponCode !== null ? ' ('.e($couponCode).')' : '').': -'.$fmt($discountMinor).'</p>';
         }
-        $html .= '<p>Shipping: '.($shippingMinor > 0 ? $fmt($shippingMinor) : 'Free').'</p>';
+        $html .= '<p>'.e(tr('shipping', 'site')).': '.($shippingMinor > 0 ? $fmt($shippingMinor) : e(tr('free', 'site'))).'</p>';
         if ($taxMinor > 0) {
-            $html .= '<p>Tax: '.$fmt($taxMinor).'</p>';
+            $html .= '<p>'.e(tr('tax', 'site')).': '.$fmt($taxMinor).'</p>';
         }
-        $html .= '<p><strong>Total: '.$fmt($totalMinor).'</strong></p>';
+        $html .= '<p><strong>'.e(tr('total', 'site')).': '.$fmt($totalMinor).'</strong></p>';
         return $html;
     }
 
@@ -102,12 +102,12 @@ final class StorefrontRoute
     {
         if ($appliedCode !== null) {
             return '<form method="post" class="commerce-coupon-form"><input type="hidden" name="csrf" value="'.csrf().'"><input type="hidden" name="action" value="remove_coupon">'
-                .'<span class="muted">Coupon applied: <strong>'.e($appliedCode).'</strong></span>'
-                .'<button class="btn ghost" type="submit">Remove</button></form>';
+                .'<span class="muted">'.e(tr('coupon_applied', 'site')).': <strong>'.e($appliedCode).'</strong></span>'
+                .'<button class="btn ghost" type="submit">'.e(tr('remove', 'site')).'</button></form>';
         }
         return '<form method="post" class="commerce-coupon-form"><input type="hidden" name="csrf" value="'.csrf().'"><input type="hidden" name="action" value="apply_coupon">'
-            .'<input name="coupon_code" placeholder="Coupon code">'
-            .'<button class="btn ghost" type="submit">Apply coupon</button></form>';
+            .'<input name="coupon_code" placeholder="'.e(tr('coupon_code', 'site')).'">'
+            .'<button class="btn ghost" type="submit">'.e(tr('apply_coupon', 'site')).'</button></form>';
     }
 
     public function dispatch(string $path): bool

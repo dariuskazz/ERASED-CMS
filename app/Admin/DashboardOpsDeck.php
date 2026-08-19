@@ -390,9 +390,20 @@ function erased_dashboard_render_ops_deck(array $view): string
     .dash-ops .grid{ grid-template-columns:1fr; }
   }
   @media (max-width: 640px){
-    .dash-ops{ margin:-16px; padding:18px 16px 40px; }
+    .dash-ops{ margin:-14px; padding:14px 12px 30px; }
+    .dash-ops .topbar{ gap:16px; margin-bottom:20px; }
+    .dash-ops h1.greeting{ font-size:20px; }
     .dash-ops .telemetry{ grid-template-columns:repeat(2,1fr); }
     .dash-ops .stats{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width: 440px){
+    .dash-ops{ margin:-10px; padding:10px 8px 24px; }
+    .dash-ops .telemetry{ grid-template-columns:1fr; }
+    .dash-ops .stats{ grid-template-columns:1fr; }
+    .dash-ops .hbtn{ padding:7px 10px; font-size:10px; width:100%; text-align:center; }
+    .dash-ops .topbar-right{ width:100%; }
+    .dash-ops .panel-head{ flex-wrap:wrap; gap:6px; }
+    .dash-ops .tcell-value, .dash-ops .stat-value{ font-size:15px; }
   }
 </style>
 

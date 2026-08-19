@@ -1,0 +1,25 @@
+{
+  "id": "erased.newsletter-subscribers",
+  "type": "module",
+  "name": "Newsletter Subscribers Pro",
+  "version": "1.0.0",
+  "requires": "0.9.0",
+  "author": "ERASED CMS",
+  "description": "View, search, filter, manage, and export newsletter subscriber records in the ERASED CMS Admin Panel.",
+  "permissions": [
+    { "id": "newsletter.subscribers.manage", "label": "Manage Newsletter Subscribers" }
+  ],
+  "services": {
+    "erased.newsletter.subscribers.admin": { "file": "src/AdminRoute.php", "class": "ErasedNewsletter\\SubscribersAdminRoute", "shared": true }
+  },
+  "admin_routes": [
+    { "id": "newsletter.subscribers.list", "path": "/admin/newsletter/subscribers", "permission": "newsletter.subscribers.manage", "service_id": "erased.newsletter.subscribers.admin" },
+    { "id": "newsletter.subscribers.export", "path": "/admin/newsletter/subscribers/export", "permission": "newsletter.subscribers.manage", "service_id": "erased.newsletter.subscribers.admin" },
+    { "id": "newsletter.subscribers.toggle", "path": "/admin/newsletter/subscribers/{id}/toggle", "permission": "newsletter.subscribers.manage", "service_id": "erased.newsletter.subscribers.admin" },
+    { "id": "newsletter.subscribers.delete", "path": "/admin/newsletter/subscribers/{id}/delete", "permission": "newsletter.subscribers.manage", "service_id": "erased.newsletter.subscribers.admin" }
+  ],
+  "admin_menu": [
+    { "label": "Subscribers", "path": "/admin/newsletter/subscribers", "permission": "newsletter.subscribers.manage", "group": "Marketing", "sheet_code": "NL-01" }
+  ],
+  "lifecycle": { "file": "src/Lifecycle.php", "class": "ErasedNewsletter\\Lifecycle" }
+}

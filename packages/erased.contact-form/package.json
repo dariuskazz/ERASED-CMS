@@ -1,0 +1,25 @@
+{
+  "id": "erased.contact-form",
+  "type": "module",
+  "name": "Contact Form",
+  "version": "0.1.1",
+  "requires": "0.3.0",
+  "author": "ERASED CMS",
+  "description": "A [contact_form] shortcode for any page or post, backed by a real contact_submissions table and an admin inbox to read/delete messages. Honeypot + rate-limit spam protection matching the built-in comment form's own convention.",
+  "permissions": [
+    { "id": "contact-form.manage", "label": "Manage Contact Form submissions" }
+  ],
+  "services": {
+    "erased.contact_form.submissions_admin": { "file": "src/Admin/ContactSubmissionsAdminRoute.php", "class": "ErasedContactForm\\Admin\\ContactSubmissionsAdminRoute", "shared": true },
+    "erased.contact_form.block": { "file": "src/Frontend/ContactFormBlock.php", "class": "ErasedContactForm\\Frontend\\ContactFormBlock", "shared": true }
+  },
+  "admin_routes": [
+    { "id": "contact_form.submissions.list", "path": "/admin/contact-form/submissions", "permission": "contact-form.manage", "service_id": "erased.contact_form.submissions_admin" },
+    { "id": "contact_form.submissions.view", "path": "/admin/contact-form/submissions/{id}", "permission": "contact-form.manage", "service_id": "erased.contact_form.submissions_admin" },
+    { "id": "contact_form.submissions.delete", "path": "/admin/contact-form/submissions/{id}/delete", "permission": "contact-form.manage", "service_id": "erased.contact_form.submissions_admin" }
+  ],
+  "admin_menu": [
+    { "label": "Contact form messages", "path": "/admin/contact-form/submissions", "permission": "contact-form.manage", "group": "Contact Form", "sheet_code": "CF-01" }
+  ],
+  "lifecycle": { "file": "src/Lifecycle.php", "class": "ErasedContactForm\\Lifecycle" }
+}

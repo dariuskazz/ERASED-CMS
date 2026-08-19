@@ -59,19 +59,19 @@ final class CommerceSettingsAdminRoute
         $threshold = setting('commerce_shipping_free_threshold_minor', '');
         $thresholdDisplay = $threshold !== '' ? number_format((int)$threshold / 100, 2, '.', '') : '';
 
-        $body = '<div class="title-row"><div><p class="kicker">SHEET C-04 &middot; COMMERCE</p><h1>Commerce Settings</h1>'
-            .'<p>A single flat tax rate and shipping fee applied to every order &mdash; not real jurisdiction-based tax or carrier-rated shipping, since checkout collects no address to compute either against.</p></div></div>'
-            .'<div class="panel"><div class="reg tl"></div><div class="reg tr"></div><div class="reg bl"></div><div class="reg br"></div><div class="panel-head"><h2>Tax &amp; Shipping</h2></div><div class="panel-body">'
+        $body = '<div class="title-row"><div><p class="kicker">SHEET C-04 &middot; COMMERCE</p><h1>'.e(tr('commerce_settings', 'admin')).'</h1>'
+            .'<p>'.e(tr('commerce_settings_desc', 'admin')).'</p></div></div>'
+            .'<div class="panel"><div class="reg tl"></div><div class="reg tr"></div><div class="reg bl"></div><div class="reg br"></div><div class="panel-head"><h2>'.e(tr('tax_and_shipping', 'admin')).'</h2></div><div class="panel-body">'
             .'<form method="post"><input type="hidden" name="csrf" value="'.csrf().'">'
             .'<div class="fgrid three">'
-            .'<div class="fslot"><label>Tax rate (%)<input type="number" step="0.01" min="0" name="tax_rate_percent" value="'.e($taxPercent).'"></label></div>'
-            .'<div class="fslot"><label>Flat shipping fee ('.e($currency).')<input type="number" step="0.01" min="0" name="shipping_flat" value="'.e($shippingFlat).'"></label></div>'
-            .'<div class="fslot"><label>Free shipping above ('.e($currency).', blank = no threshold)<input type="number" step="0.01" min="0" name="shipping_free_threshold" value="'.e($thresholdDisplay).'"></label></div>'
+            .'<div class="fslot"><label>'.e(tr('tax_rate_percent', 'admin')).'<input type="number" step="0.01" min="0" name="tax_rate_percent" value="'.e($taxPercent).'"></label></div>'
+            .'<div class="fslot"><label>'.e(str_replace('{currency}', $currency, tr('flat_shipping_fee', 'admin'))).'<input type="number" step="0.01" min="0" name="shipping_flat" value="'.e($shippingFlat).'"></label></div>'
+            .'<div class="fslot"><label>'.e(str_replace('{currency}', $currency, tr('free_shipping_above', 'admin'))).'<input type="number" step="0.01" min="0" name="shipping_free_threshold" value="'.e($thresholdDisplay).'"></label></div>'
             .'</div>'
             .$this->shopFrontFieldsHtml()
-            .'<button class="btn" type="submit" style="margin-top:14px">Save settings</button>'
+            .'<button class="btn" type="submit" style="margin-top:14px">'.e(tr('save_settings', 'admin')).'</button>'
             .'</form></div></div>';
-        layout('Commerce Settings', $body, true);
+        layout(tr('commerce_settings', 'admin'), $body, true);
     }
 
     private function shopFrontFieldsHtml(): string
@@ -79,24 +79,24 @@ final class CommerceSettingsAdminRoute
         $g = static fn (string $key): string => ShopFrontConfig::get($key);
         $checked = static fn (string $key): string => $g($key) === '1' ? ' checked' : '';
 
-        $h = '<div class="panel-head" style="margin:28px -1px 0;border-top:1px solid var(--line);padding-top:20px"><h2>Shop Front &mdash; Hero</h2></div>'
-            . '<p class="muted" style="margin-top:0">Controls the top of <a href="/shop" target="_blank">/shop</a>. Product count and category count in the stats row are always live; the third stat is yours to fill in (or leave blank to hide it).</p>'
-            . '<label class="check"><input type="checkbox" name="shop_hero_enabled" value="1"' . $checked('shop_hero_enabled') . '> Show the hero section</label>'
+        $h = '<div class="panel-head" style="margin:28px -1px 0;border-top:1px solid var(--line);padding-top:20px"><h2>'.e(tr('shop_front_hero', 'admin')).'</h2></div>'
+            . '<p class="muted" style="margin-top:0">'.e(tr('shop_front_hero_desc', 'admin')).'</p>'
+            . '<label class="check"><input type="checkbox" name="shop_hero_enabled" value="1"' . $checked('shop_hero_enabled') . '> '.e(tr('show_hero_section', 'admin')).'</label>'
             . '<div class="fgrid three" style="margin-top:10px">'
-            . '<div class="fslot"><label>Eyebrow badge<input name="shop_hero_eyebrow" value="' . e($g('shop_hero_eyebrow')) . '"></label></div>'
-            . '<div class="fslot"><label>Headline<input name="shop_hero_headline" value="' . e($g('shop_hero_headline')) . '"></label></div>'
-            . '<div class="fslot"><label>Headline emphasis (must match a phrase in the headline exactly)<input name="shop_hero_headline_emphasis" value="' . e($g('shop_hero_headline_emphasis')) . '"></label></div>'
+            . '<div class="fslot"><label>'.e(tr('eyebrow_badge', 'admin')).'<input name="shop_hero_eyebrow" value="' . e($g('shop_hero_eyebrow')) . '"></label></div>'
+            . '<div class="fslot"><label>'.e(tr('headline', 'admin')).'<input name="shop_hero_headline" value="' . e($g('shop_hero_headline')) . '"></label></div>'
+            . '<div class="fslot"><label>'.e(tr('headline_emphasis', 'admin')).'<input name="shop_hero_headline_emphasis" value="' . e($g('shop_hero_headline_emphasis')) . '"></label></div>'
             . '</div>'
-            . '<div class="fslot"><label>Description<textarea name="shop_hero_description" style="min-height:70px">' . e($g('shop_hero_description')) . '</textarea></label></div>'
-            . '<div class="fgrid"><div class="fslot"><label>Primary button text<input name="shop_hero_cta_primary_text" value="' . e($g('shop_hero_cta_primary_text')) . '"></label></div>'
-            . '<div class="fslot"><label>Primary button link<input name="shop_hero_cta_primary_url" value="' . e($g('shop_hero_cta_primary_url')) . '"></label></div></div>'
-            . '<div class="fgrid"><div class="fslot"><label>Secondary button text<input name="shop_hero_cta_secondary_text" value="' . e($g('shop_hero_cta_secondary_text')) . '"></label></div>'
-            . '<div class="fslot"><label>Secondary button link<input name="shop_hero_cta_secondary_url" value="' . e($g('shop_hero_cta_secondary_url')) . '"></label></div></div>'
-            . '<div class="fgrid"><div class="fslot"><label>Third stat value (e.g. "4.9★", blank = hidden)<input name="shop_hero_stat3_value" value="' . e($g('shop_hero_stat3_value')) . '"></label></div>'
-            . '<div class="fslot"><label>Third stat label (e.g. "Avg. rating")<input name="shop_hero_stat3_label" value="' . e($g('shop_hero_stat3_label')) . '"></label></div></div>';
+            . '<div class="fslot"><label>'.e(tr('description', 'admin')).'<textarea name="shop_hero_description" style="min-height:70px">' . e($g('shop_hero_description')) . '</textarea></label></div>'
+            . '<div class="fgrid"><div class="fslot"><label>'.e(tr('primary_button_text', 'admin')).'<input name="shop_hero_cta_primary_text" value="' . e($g('shop_hero_cta_primary_text')) . '"></label></div>'
+            . '<div class="fslot"><label>'.e(tr('primary_button_link', 'admin')).'<input name="shop_hero_cta_primary_url" value="' . e($g('shop_hero_cta_primary_url')) . '"></label></div></div>'
+            . '<div class="fgrid"><div class="fslot"><label>'.e(tr('secondary_button_text', 'admin')).'<input name="shop_hero_cta_secondary_text" value="' . e($g('shop_hero_cta_secondary_text')) . '"></label></div>'
+            . '<div class="fslot"><label>'.e(tr('secondary_button_link', 'admin')).'<input name="shop_hero_cta_secondary_url" value="' . e($g('shop_hero_cta_secondary_url')) . '"></label></div></div>'
+            . '<div class="fgrid"><div class="fslot"><label>'.e(tr('third_stat_value', 'admin')).'<input name="shop_hero_stat3_value" value="' . e($g('shop_hero_stat3_value')) . '"></label></div>'
+            . '<div class="fslot"><label>'.e(tr('third_stat_label', 'admin')).'<input name="shop_hero_stat3_label" value="' . e($g('shop_hero_stat3_label')) . '"></label></div></div>';
 
-        $h .= '<div class="panel-head" style="margin:28px -1px 0;border-top:1px solid var(--line);padding-top:20px"><h2>Shop Front &mdash; Trust Strip</h2></div>'
-            . '<label class="check"><input type="checkbox" name="shop_trust_enabled" value="1"' . $checked('shop_trust_enabled') . '> Show the trust strip</label>'
+        $h .= '<div class="panel-head" style="margin:28px -1px 0;border-top:1px solid var(--line);padding-top:20px"><h2>'.e(tr('shop_front_trust_strip', 'admin')).'</h2></div>'
+            . '<label class="check"><input type="checkbox" name="shop_trust_enabled" value="1"' . $checked('shop_trust_enabled') . '> '.e(tr('show_trust_strip', 'admin')).'</label>'
             . '<div class="fgrid" style="margin-top:10px">';
         $iconOptions = '';
         foreach (ShopFrontConfig::trustIconOptions() as $value => $label) {
@@ -108,15 +108,16 @@ final class CommerceSettingsAdminRoute
             foreach (ShopFrontConfig::trustIconOptions() as $value => $label) {
                 $options .= '<option value="' . e($value) . '"' . ($iconKey === $value ? ' selected' : '') . '>' . e($label) . '</option>';
             }
-            $h .= '<div class="fslot" style="border:1px solid var(--line);border-radius:8px;padding:12px"><label>Item ' . $i . ' icon<select name="shop_trust_' . $i . '_icon">' . $options . '</select></label>'
-                . '<label style="margin-top:8px;display:block">Title<input name="shop_trust_' . $i . '_title" value="' . e($g('shop_trust_' . $i . '_title')) . '"></label>'
-                . '<label style="margin-top:8px;display:block">Subtitle<input name="shop_trust_' . $i . '_subtitle" value="' . e($g('shop_trust_' . $i . '_subtitle')) . '"></label></div>';
+            $itemLabel = str_replace('{n}', (string)$i, tr('item_icon', 'admin'));
+            $h .= '<div class="fslot" style="border:1px solid var(--line);border-radius:8px;padding:12px"><label>'.e($itemLabel).'<select name="shop_trust_' . $i . '_icon">' . $options . '</select></label>'
+                . '<label style="margin-top:8px;display:block">'.e(tr('title', 'admin')).'<input name="shop_trust_' . $i . '_title" value="' . e($g('shop_trust_' . $i . '_title')) . '"></label>'
+                . '<label style="margin-top:8px;display:block">'.e(tr('subtitle', 'admin')).'<input name="shop_trust_' . $i . '_subtitle" value="' . e($g('shop_trust_' . $i . '_subtitle')) . '"></label></div>';
         }
         $h .= '</div>';
 
-        $h .= '<div class="panel-head" style="margin:28px -1px 0;border-top:1px solid var(--line);padding-top:20px"><h2>Shop Front &mdash; Other Sections</h2></div>'
-            . '<label class="check"><input type="checkbox" name="shop_category_rail_enabled" value="1"' . $checked('shop_category_rail_enabled') . '> Show the category rail</label>'
-            . '<label class="check"><input type="checkbox" name="shop_recommended_enabled" value="1"' . $checked('shop_recommended_enabled') . '> Show the Recommended carousel</label>';
+        $h .= '<div class="panel-head" style="margin:28px -1px 0;border-top:1px solid var(--line);padding-top:20px"><h2>'.e(tr('shop_front_other_sections', 'admin')).'</h2></div>'
+            . '<label class="check"><input type="checkbox" name="shop_category_rail_enabled" value="1"' . $checked('shop_category_rail_enabled') . '> '.e(tr('show_category_rail', 'admin')).'</label>'
+            . '<label class="check"><input type="checkbox" name="shop_recommended_enabled" value="1"' . $checked('shop_recommended_enabled') . '> '.e(tr('show_recommended_carousel', 'admin')).'</label>';
 
         return $h;
     }
