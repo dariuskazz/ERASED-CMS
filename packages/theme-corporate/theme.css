@@ -1,0 +1,22 @@
+/* Corporate - navy-on-white professional palette. Pale blue-grey ground,
+   crisp white panels, deep navy text - the "enterprise SaaS" register. */
+body.theme-dark-green:not(.admin-area){
+  color-scheme: light;
+  --bg:#dbe3f0; --panel:#ffffff; --panel-2:#e7edf7; --line:#c3d0e4;
+  --text:#0f1d38; --muted:#3f557a;
+  --control:#eef2fa; --control-hover:#ffffff;
+  --danger:#b3392c; --warning:#a6721c;
+  --green:#2f5aa8;
+  background:#dbe3f0; color:#0f1d38;
+}
+body.theme-dark-green:not(.admin-area) header{
+  background:#0f1d38; border-color:#0f1d38;
+}
+body.theme-dark-green:not(.admin-area) header .brand,
+body.theme-dark-green:not(.admin-area) header nav a{
+  color:#eef2fa;
+}
+body.theme-dark-green:not(.admin-area) header nav a:hover{
+  background:rgba(255,255,255,.12);
+}
+

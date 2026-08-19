@@ -1,0 +1,61 @@
+{
+  "id": "erased.commerce",
+  "type": "module",
+  "name": "ERASED Commerce",
+  "version": "0.7.0",
+  "requires": "0.3.0",
+  "author": "ERASED CMS",
+  "description": "Products, cart, checkout, and orders. Phase 1: manual bank transfer only. Phase 3: digital/physical/subscription product kinds. Phase B: orders calendar, multiple product images, subcategories. Phase C: a real category tree (two levels, with images) replacing free-text category tags, plus FULLTEXT product search. Declares a Featured Products homepage block.",
+  "permissions": [
+    { "id": "commerce.manage", "label": "Manage Commerce (products & orders)" }
+  ],
+  "services": {
+    "erased.commerce.products_admin": { "file": "src/Admin/ProductsAdminRoute.php", "class": "ErasedCommerce\\Admin\\ProductsAdminRoute", "shared": true },
+    "erased.commerce.categories_admin": { "file": "src/Admin/CategoriesAdminRoute.php", "class": "ErasedCommerce\\Admin\\CategoriesAdminRoute", "shared": true },
+    "erased.commerce.stats_admin": { "file": "src/Admin/StatsAdminRoute.php", "class": "ErasedCommerce\\Admin\\StatsAdminRoute", "shared": true },
+    "erased.commerce.orders_admin": { "file": "src/Admin/OrdersAdminRoute.php", "class": "ErasedCommerce\\Admin\\OrdersAdminRoute", "shared": true },
+    "erased.commerce.storefront": { "file": "src/Storefront/StorefrontRoute.php", "class": "ErasedCommerce\\Storefront\\StorefrontRoute", "shared": true },
+    "erased.commerce.coupons_admin": { "file": "src/Admin/CouponsAdminRoute.php", "class": "ErasedCommerce\\Admin\\CouponsAdminRoute", "shared": true },
+    "erased.commerce.settings_admin": { "file": "src/Admin/CommerceSettingsAdminRoute.php", "class": "ErasedCommerce\\Admin\\CommerceSettingsAdminRoute", "shared": true },
+    "erased.commerce.subscriptions_admin": { "file": "src/Admin/SubscriptionsAdminRoute.php", "class": "ErasedCommerce\\Admin\\SubscriptionsAdminRoute", "shared": true },
+    "erased.commerce.featured_products_block": { "file": "src/Homepage/FeaturedProductsBlock.php", "class": "ErasedCommerce\\Homepage\\FeaturedProductsBlock", "shared": true }
+  },
+  "homepage_blocks": [
+    { "id": "commerce.featured-products", "title": "Featured Products", "category": "commerce", "service_id": "erased.commerce.featured_products_block", "description": "Shows a small grid of published products linking to the shop." }
+  ],
+  "admin_routes": [
+    { "id": "commerce.products.list", "path": "/admin/commerce/products", "permission": "commerce.manage", "service_id": "erased.commerce.products_admin" },
+    { "id": "commerce.products.new", "path": "/admin/commerce/products/new", "permission": "commerce.manage", "service_id": "erased.commerce.products_admin" },
+    { "id": "commerce.products.edit", "path": "/admin/commerce/products/{id}/edit", "permission": "commerce.manage", "service_id": "erased.commerce.products_admin" },
+    { "id": "commerce.products.delete", "path": "/admin/commerce/products/{id}/delete", "permission": "commerce.manage", "service_id": "erased.commerce.products_admin" },
+    { "id": "commerce.products.files.delete", "path": "/admin/commerce/products/{id}/files/{fileId}/delete", "permission": "commerce.manage", "service_id": "erased.commerce.products_admin" },
+    { "id": "commerce.products.images.add", "path": "/admin/commerce/products/{id}/images/add", "permission": "commerce.manage", "service_id": "erased.commerce.products_admin" },
+    { "id": "commerce.products.images.delete", "path": "/admin/commerce/products/{id}/images/{imageId}/delete", "permission": "commerce.manage", "service_id": "erased.commerce.products_admin" },
+    { "id": "commerce.categories.list", "path": "/admin/commerce/categories", "permission": "commerce.manage", "service_id": "erased.commerce.categories_admin" },
+    { "id": "commerce.categories.new", "path": "/admin/commerce/categories/new", "permission": "commerce.manage", "service_id": "erased.commerce.categories_admin" },
+    { "id": "commerce.categories.edit", "path": "/admin/commerce/categories/{id}/edit", "permission": "commerce.manage", "service_id": "erased.commerce.categories_admin" },
+    { "id": "commerce.categories.delete", "path": "/admin/commerce/categories/{id}/delete", "permission": "commerce.manage", "service_id": "erased.commerce.categories_admin" },
+    { "id": "commerce.orders.list", "path": "/admin/commerce/orders", "permission": "commerce.manage", "service_id": "erased.commerce.orders_admin" },
+    { "id": "commerce.orders.calendar", "path": "/admin/commerce/orders/calendar", "permission": "commerce.manage", "service_id": "erased.commerce.orders_admin" },
+    { "id": "commerce.orders.detail", "path": "/admin/commerce/orders/{id}", "permission": "commerce.manage", "service_id": "erased.commerce.orders_admin" },
+    { "id": "commerce.coupons.list", "path": "/admin/commerce/coupons", "permission": "commerce.manage", "service_id": "erased.commerce.coupons_admin" },
+    { "id": "commerce.coupons.new", "path": "/admin/commerce/coupons/new", "permission": "commerce.manage", "service_id": "erased.commerce.coupons_admin" },
+    { "id": "commerce.coupons.edit", "path": "/admin/commerce/coupons/{id}/edit", "permission": "commerce.manage", "service_id": "erased.commerce.coupons_admin" },
+    { "id": "commerce.coupons.delete", "path": "/admin/commerce/coupons/{id}/delete", "permission": "commerce.manage", "service_id": "erased.commerce.coupons_admin" },
+    { "id": "commerce.settings", "path": "/admin/commerce/settings", "permission": "commerce.manage", "service_id": "erased.commerce.settings_admin" },
+    { "id": "commerce.subscriptions.list", "path": "/admin/commerce/subscriptions", "permission": "commerce.manage", "service_id": "erased.commerce.subscriptions_admin" },
+    { "id": "commerce.subscriptions.cancel", "path": "/admin/commerce/subscriptions/{id}/cancel", "permission": "commerce.manage", "service_id": "erased.commerce.subscriptions_admin" },
+    { "id": "commerce.stats", "path": "/admin/commerce/stats", "permission": "commerce.manage", "service_id": "erased.commerce.stats_admin" }
+  ],
+  "admin_menu": [
+    { "label": "Products", "path": "/admin/commerce/products", "permission": "commerce.manage", "group": "Commerce", "sheet_code": "C-01" },
+    { "label": "Categories", "path": "/admin/commerce/categories", "permission": "commerce.manage", "group": "Commerce", "sheet_code": "C-07" },
+    { "label": "Orders", "path": "/admin/commerce/orders", "permission": "commerce.manage", "group": "Commerce", "sheet_code": "C-02" },
+    { "label": "Coupons", "path": "/admin/commerce/coupons", "permission": "commerce.manage", "group": "Commerce", "sheet_code": "C-03" },
+    { "label": "Settings", "path": "/admin/commerce/settings", "permission": "commerce.manage", "group": "Commerce", "sheet_code": "C-04" },
+    { "label": "Subscriptions", "path": "/admin/commerce/subscriptions", "permission": "commerce.manage", "group": "Commerce", "sheet_code": "C-05" },
+    { "label": "Calendar", "path": "/admin/commerce/orders/calendar", "permission": "commerce.manage", "group": "Commerce", "sheet_code": "C-06" },
+    { "label": "Statistics", "path": "/admin/commerce/stats", "permission": "commerce.manage", "group": "Commerce", "sheet_code": "C-08" }
+  ],
+  "lifecycle": { "file": "src/Lifecycle.php", "class": "ErasedCommerce\\Lifecycle" }
+}

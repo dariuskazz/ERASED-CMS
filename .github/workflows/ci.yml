@@ -1,0 +1,67 @@
+name: ERASED CMS checks
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - v0.3-dev
+      - feature/**
+      - restore/**
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo, pdo_sqlite, sqlite3, zip
+          coverage: none
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install editor dependencies
+        run: npm ci
+
+      - name: Lint all PHP
+        run: |
+          set -euo pipefail
+          find app config database public routes tests tools -type f -name '*.php' -print0 \
+            | xargs -0 -n1 php -l
+
+      - name: Static analysis (PHPStan)
+        run: |
+          set -euo pipefail
+          curl -sL -o /tmp/phpstan.phar https://github.com/phpstan/phpstan/releases/latest/download/phpstan.phar
+          php -d memory_limit=1G /tmp/phpstan.phar analyse -c phpstan.neon.dist --no-progress --memory-limit=1G
+
+      - name: Run PHP test suite
+        run: |
+          # tools/run-tests.php is the single source of truth for this suite
+          # (tests/smoke.php plus every tools/test-*.php, including the
+          # quarantine list for tests whose UI contract has since regressed)
+          # - the same command a developer runs locally.
+          php tools/run-tests.php
+
+      - name: Run editor security tests
+        run: npm test
+
+      - name: Build editor assets
+        run: npm run build
+
+      - name: Verify generated editor assets are committed
+        run: git diff --exit-code -- public/assets/editor

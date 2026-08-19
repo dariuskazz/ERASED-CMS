@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "default": "blog",
+  "types": [
+    {"id":"news","name":"News Portal","description":"Magazine and news publishing","recommended_modules":["posts","comments","gallery","newsletter","search"]},
+    {"id":"blog","name":"Blog","description":"Articles and personal publishing","recommended_modules":["posts","comments","newsletter","search"]},
+    {"id":"business","name":"Business","description":"Single-column business and company site","recommended_modules":["pages","forms","gallery"]},
+    {"id":"portfolio","name":"Portfolio","description":"Projects, services and personal work","recommended_modules":["pages","gallery","forms"]},
+    {"id":"gallery","name":"Gallery","description":"Artwork and photography collections","recommended_modules":["gallery","comments","search"]},
+    {"id":"video","name":"Video","description":"Video portal and media publishing","recommended_modules":["video","comments","search"]},
+    {"id":"shop","name":"Web Shop","description":"Commerce-first website preset","recommended_modules":["commerce","pages","search"]},
+    {"id":"community","name":"Community","description":"Members, groups and shared content","recommended_modules":["memberships","comments","events"]},
+    {"id":"documentation","name":"Documentation / Wiki","description":"Structured knowledge and documentation","recommended_modules":["pages","search"]},
+    {"id":"landing","name":"Landing Page","description":"Focused one-page marketing website","recommended_modules":["pages","forms"]},
+    {"id":"custom","name":"Custom","description":"Blank profile for manual configuration","recommended_modules":[]}
+  ]
+}

@@ -1,0 +1,13 @@
+RewriteEngine On
+# The bare document-root request (`/`) always maps to a real directory (the
+# docroot itself), so a `!-d` guard here would ALWAYS be false and this rule
+# would never fire - unlike every other path, there's no real file/dir
+# ambiguity to protect against for the empty path specifically, so it's
+# rewritten unconditionally.
+RewriteRule ^$ public/ [L]
+# Real files sitting at the document root (install.php, login.php, admin.php -
+# the rewrite-independent entry points) must be served directly, not
+# rewritten into public/ where they don't exist.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*) public/$1 [L]

@@ -1,0 +1,18 @@
+/* Minimal - true monochrome. Pure black and white only, no colour anywhere
+   including the accent - links and buttons read as ink-on-paper, not a
+   brand colour. Thin hairline borders, flattened shadows, tight muted-text
+   contrast so nothing but content draws the eye. */
+body.theme-dark-green:not(.admin-area){
+  color-scheme: light;
+  --bg:#ffffff; --panel:#ffffff; --panel-2:#f4f4f4; --line:#111111;
+  --text:#0a0a0a; --muted:#6b6b6b;
+  --control:#ffffff; --control-hover:#f4f4f4;
+  --danger:#7a2020; --warning:#6b5010;
+  --green:#111111;
+  background:#ffffff; color:#0a0a0a;
+}
+body.theme-dark-green:not(.admin-area) .card,
+body.theme-dark-green:not(.admin-area) .panel,
+body.theme-dark-green:not(.admin-area) .modal-box{
+  box-shadow:none; border:1px solid #111111;
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="ERASED CMS Option 2 icon">
+<defs><linearGradient id="m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#aeb5b9"/></linearGradient><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8cff25"/><stop offset="1" stop-color="#43b70f"/></linearGradient></defs>
+<rect width="128" height="128" rx="24" fill="#07100c"/>
+<path d="M22 31h68v15H38v17h39v15H38v17h52v15H22z" fill="url(#m)"/>
+<path d="M61 18h48v54H94V33H61z" fill="url(#g)"/>
+</svg>

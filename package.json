@@ -1,0 +1,30 @@
+{
+  "name": "erased-cms-editor",
+  "private": true,
+  "version": "0.9.3-beta",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "node --test tests/*.test.mjs",
+    "test:php": "php tests/smoke.php"
+  },
+  "dependencies": {
+    "@lexical/history": "^0.48.0",
+    "@lexical/html": "^0.48.0",
+    "@lexical/link": "^0.48.0",
+    "@lexical/list": "^0.48.0",
+    "@lexical/rich-text": "^0.48.0",
+    "@lexical/selection": "^0.48.0",
+    "@lexical/table": "^0.48.0",
+    "@lexical/utils": "^0.48.0"
+  },
+  "devDependencies": {
+    "linkedom": "^0.18.13",
+    "vite": "^7.3.6"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
+  }
+}

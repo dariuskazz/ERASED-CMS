@@ -1,0 +1,15 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 1
+    paths:
+        - app
+        - routes
+        - public/index.php
+    excludePaths:
+        - app/*.php.bak
+        - app/**/*.bak
+        - app/**/*-backup
+        - app/**/*.before-*
+    tmpDir: storage/phpstan-cache

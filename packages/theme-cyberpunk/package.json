@@ -1,0 +1,11 @@
+{
+  "id": "erased.theme-cyberpunk",
+  "type": "theme",
+  "name": "Cyberpunk",
+  "version": "1.1.0",
+  "requires": "0.5.0",
+  "author": "ERASED CMS",
+  "description": "Dark grey-green terminal register - muted, low-glow, no neon or bright signal colours.",
+  "theme_scope": "website",
+  "assets": "theme.css"
+}

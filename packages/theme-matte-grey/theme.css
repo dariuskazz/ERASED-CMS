@@ -1,0 +1,20 @@
+/* Matte Grey - a flat, fully desaturated mid-grey theme. Deliberately
+   neither Dark nor Light - a quiet middle register with no colour cast
+   anywhere, and flattened shadows so nothing reads as glossy. */
+body.theme-dark-green:not(.admin-area){
+  color-scheme: light;
+  --bg:#a8a8a3; --panel:#b8b8b3; --panel-2:#9e9e99; --line:#87877f;
+  --text:#1c1c1a; --muted:#464642;
+  --control:#b2b2ad; --control-hover:#c2c2bd;
+  --danger:#7a352f; --warning:#5c4a1f;
+  --green:#6f8874;
+  background:#a8a8a3; color:#1c1c1a;
+}
+body.theme-dark-green:not(.admin-area) header{
+  background:#98988f; border-color:#87877f;
+}
+body.theme-dark-green:not(.admin-area) .card,
+body.theme-dark-green:not(.admin-area) .panel,
+body.theme-dark-green:not(.admin-area) .modal-box{
+  box-shadow:none;
+}

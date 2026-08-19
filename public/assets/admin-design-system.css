@@ -1,0 +1,1226 @@
+/* ============================================================
+   ERASED CMS Admin Design System - "BLUEPRINT"
+
+   Built from scratch off the approved Blueprint sketch. This file
+   contains ONLY the sketch's own classes (.frame/.spine.../.panel/
+   .schedule/.docket/.ls-*) - nothing here is inherited from, aliased
+   to, or compatible with the old "Graphite & Eraser" admin theme.
+   Everything is scoped under .admin-area so it can never leak onto
+   the public site, which has its own separate theme system.
+
+   Built-in admin themes:
+     light-grey -> BLUEPRINT, light (the cyanotype's own ink colour
+                   as an accent on light blueprint-paper, not the
+                   print itself - the light twin of dark-grey below)
+     dark-grey  -> CYANOTYPE (the original engineering blueprint blue)
+     dark-green -> FERRO-GREEN (green-toned technical print, keeps the
+                   CMS's own brand green)
+     ops-deck   -> dark mission-control dashboard, one committed amber
+                   signal (its own bespoke dashboard layout, not just
+                   a colour swap - see app/Admin/DashboardOpsDeck.php)
+   ============================================================ */
+
+.admin-area{
+  --font-label:ui-sans-serif,system-ui,sans-serif;
+  --font-body:ui-sans-serif,system-ui,sans-serif;
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  accent-color:var(--accent);
+}
+/* Legacy-CSS compatibility shim: public/index.php still ships a large
+   pre-Blueprint inline stylesheet (bare `nav a`, `.card`, `button`,
+   `.badge`, etc.) for pages not yet hand-converted to Blueprint's own
+   classes. Those bare rules aren't scoped to .admin-area, so on any
+   property Blueprint doesn't explicitly re-declare for that element,
+   the legacy declaration still wins and reads whatever it defines
+   its own tokens as (--green/--text/--panel/...), which are never
+   theme-aware. Redirecting those legacy token names to the real
+   Blueprint tokens here - a single, low-risk addition, not a change
+   to the legacy rules themselves - makes every such leak resolve to
+   the correct theme color automatically instead of chasing each one
+   individually. --line already collides intentionally: both systems
+   use that exact name and Blueprint's per-theme value already wins. */
+.admin-area{
+  --green:var(--accent); --text:var(--ink); --muted:var(--ink-dim);
+  --panel:var(--sheet); --panel-2:var(--sheet-2); --bg:var(--paper);
+  --control:var(--paper); --control-hover:var(--sheet-2);
+  --btn-text:var(--paper); --warning:var(--warn);
+}
+/* Light Blueprint - the light twin of dark-grey's Cyanotype below: same
+   blue hue family and identity, lightness inverted rather than a
+   different palette. Paper carries a faint cool-blue cast (not neutral
+   grey) so it still reads as "blueprint paper", and the accent is the
+   cyanotype pigment's own deep engineering blue, dark enough to carry
+   real contrast on a light ground (a light-cyan accent, cyanotype's
+   dark-mode colour, would not). */
+.admin-area,
+.admin-area[data-theme="light-grey"]{
+  --paper:#eef3f8; --sheet:#ffffff; --sheet-2:#e3ecf4; --line:#c5d5e3;
+  --ink:#15304c; --ink-dim:#4c6a84; --ink-faint:#6d889f;
+  --accent:#155f9e; --accent-wash:#dcebf6;
+  --good:#2f7a52; --good-wash:#dfefe4;
+  --warn:#9c6a1e; --warn-wash:#f2e4cd;
+  --danger:#bf3a3a; --danger-wash:#f4dbdb;
+  --rail-bg:#dce8f2; --rail-line:#c5d5e3; --rail-ink:#5c7b93; --rail-ink-active:#15304c;
+  --lift:0 1px 2px rgba(15,40,65,.08), 0 8px 18px rgba(15,40,65,.08);
+}
+.admin-area[data-theme="dark-grey"]{
+  --paper:#0d2440; --sheet:#123055; --sheet-2:#193b64; --line:#28496e;
+  --ink:#eaf4fb; --ink-dim:#a9c4dc; --ink-faint:#728daa;
+  --accent:#7fd4f0; --accent-wash:#153853;
+  --good:#7fe0a0; --good-wash:#123a2c;
+  --warn:#f0c06a; --warn-wash:#3a2e10;
+  --danger:#ff6b6b; --danger-wash:#3a1414;
+  --rail-bg:#091a2f; --rail-line:#1f3a5a; --rail-ink:#7f9cb8; --rail-ink-active:#eaf4fb;
+  --lift:0 1px 2px rgba(0,0,0,.4), 0 10px 24px rgba(0,0,0,.45);
+}
+.admin-area[data-theme="dark-green"]{
+  --paper:#0c1a11; --sheet:#112217; --sheet-2:#172c1d; --line:#264a30;
+  --ink:#e3f2e6; --ink-dim:#9bb8a2; --ink-faint:#698771;
+  --accent:#5ee06f; --accent-wash:#153a1f;
+  --good:#5ee06f; --good-wash:#123a2c;
+  --warn:#e0b158; --warn-wash:#3a2e10;
+  --danger:#ff6b6b; --danger-wash:#3a1414;
+  --rail-bg:#081409; --rail-line:#1c3322; --rail-ink:#6f8c76; --rail-ink-active:#e3f2e6;
+  --lift:0 1px 2px rgba(0,0,0,.4), 0 10px 24px rgba(0,0,0,.45);
+}
+/* ---------- Ops Deck: dark mission-control, one committed amber signal ---------- */
+.admin-area[data-theme="ops-deck"]{
+  --font-label:ui-monospace,"Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
+  --font-body:ui-sans-serif,system-ui,sans-serif;
+  --font-mono:ui-monospace,"Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
+  --paper:#05070a; --sheet:#0c1016; --sheet-2:#0a0d12; --line:#1b232e;
+  --ink:#e7ecf2; --ink-dim:#8592a3; --ink-faint:#6a798c;
+  --accent:#ffb000; --accent-wash:#241a00;
+  --good:#5c8a76; --good-wash:#0f1a15;
+  --warn:#ffb000; --warn-wash:#241a00;
+  --danger:#ff4d4d; --danger-wash:#2a0e0e;
+  --rail-bg:#03050a; --rail-line:#1b232e; --rail-ink:#8592a3; --rail-ink-active:#e7ecf2;
+  --lift:0 1px 2px rgba(0,0,0,.5), 0 10px 24px rgba(0,0,0,.55);
+}
+@media (prefers-color-scheme: dark){
+  .admin-area:not([data-theme="light-grey"]):not([data-theme="dark-grey"]):not([data-theme="dark-green"]):not([data-theme="ops-deck"]){
+    --paper:#0d2440; --sheet:#123055; --sheet-2:#193b64; --line:#28496e;
+    --ink:#eaf4fb; --ink-dim:#a9c4dc; --ink-faint:#728daa;
+    --accent:#7fd4f0; --accent-wash:#153853;
+    --good:#7fe0a0; --good-wash:#123a2c;
+    --warn:#f0c06a; --warn-wash:#3a2e10;
+    --danger:#ff6b6b; --danger-wash:#3a1414;
+    --rail-bg:#091a2f; --rail-line:#1f3a5a; --rail-ink:#7f9cb8; --rail-ink-active:#eaf4fb;
+    --lift:0 1px 2px rgba(0,0,0,.4), 0 10px 24px rgba(0,0,0,.45);
+  }
+}
+
+.admin-area,.admin-area *{ box-sizing:border-box; }
+.admin-area *{ border-radius:0; }
+.admin-area{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-body); font-size:13.5px; -webkit-font-smoothing:antialiased; }
+.admin-area a{ color:inherit; text-decoration:none; }
+.admin-area button{ font-family:inherit; }
+.admin-area :focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+.admin-area .mono{ font-family:var(--font-mono); }
+.admin-area .label{ font-family:var(--font-label); font-weight:700; text-transform:uppercase; letter-spacing:.07em; }
+.admin-area .icon{ width:14px; height:14px; stroke:currentColor; stroke-width:1.6; fill:none; stroke-linecap:square; flex:0 0 auto; }
+
+.admin-area .reg{ position:absolute; width:9px; height:9px; pointer-events:none; opacity:.55; }
+.admin-area .reg::before,.admin-area .reg::after{ content:""; position:absolute; background:var(--ink-faint); }
+.admin-area .reg::before{ left:4px; top:0; width:1px; height:9px; }
+.admin-area .reg::after{ left:0; top:4px; width:9px; height:1px; }
+.admin-area .reg.tl{ top:-1px; left:-1px; } .admin-area .reg.tr{ top:-1px; right:-1px; }
+.admin-area .reg.bl{ bottom:-1px; left:-1px; } .admin-area .reg.br{ bottom:-1px; right:-1px; }
+
+/* ---------- FRAME ----------
+   minmax(0,1fr), not bare 1fr: without the 0 floor, a Grid track never
+   shrinks below its content's natural width - one wide table or a row
+   of .stat boxes would blow the whole canvas column (and the page)
+   wider than the viewport instead of wrapping/scrolling in place.
+
+   --rail-w drives the open-state column width and is the ONLY thing a
+   breakpoint should ever touch. .frame/.frame.rail-hidden are each
+   declared exactly once, here - a breakpoint that instead re-declares
+   grid-template-columns on .frame directly has to also re-declare the
+   .rail-hidden variant (higher specificity, defined unconditionally) or
+   it silently loses to whatever collapsed/expanded state localStorage
+   happened to restore, which is exactly how this broke twice already. */
+.admin-area{ --rail-w:clamp(198px, 13vw, 260px); }
+.admin-area .frame{ display:grid; grid-template-columns:var(--rail-w) minmax(0,1fr); grid-template-rows:56px minmax(0,1fr); height:100vh; transition:grid-template-columns .15s ease; }
+.admin-area .frame.rail-hidden{ grid-template-columns:0 minmax(0,1fr); }
+.admin-area .frame.rail-hidden .rail{ width:0; overflow:hidden; border-right:0; }
+/* ERASED Studio's tab iframes (?studio_embed=1) need the rail AND the head bar gone,
+   not just the rail - .rail-hidden alone still leaves a 56px empty head row. Collapsing
+   to a single explicit track (rather than following .rail-hidden's own "keep two tracks,
+   size the first to 0" convention above) re-triggered exactly the footgun the comment
+   above warns about: .head/.canvas hardcode grid-column:2 and grid-row:1/2, so with only
+   one explicit column/row Grid auto-generated an implicit second track to satisfy that
+   placement, leaving a stray ~46px gutter (sized off .rail's own auto/min-content, even
+   though display:none) where the collapsed column used to be. */
+.admin-area .frame.studio-embedded{ grid-template-columns:0 minmax(0,1fr); grid-template-rows:0 minmax(0,1fr); }
+.admin-area .frame.studio-embedded .rail,
+.admin-area .frame.studio-embedded .head{ display:none; }
+
+/* ---------- SHEET INDEX (rail) ---------- */
+.admin-area .rail{ grid-row:1/3; background:var(--rail-bg); border-right:1px solid var(--rail-line); display:flex; flex-direction:column; overflow-y:auto; overflow-x:hidden; }
+.admin-area .rail-mark{ height:56px; flex:0 0 auto; display:flex; align-items:center; gap:9px; padding:0 16px; border-bottom:1px solid var(--rail-line); text-decoration:none; cursor:pointer; }
+.admin-area .rail-mark:hover span:not(.sq){ color:var(--accent); }
+.admin-area .rail-mark .sq{ width:20px; height:20px; border:1.5px solid var(--accent); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-weight:800; font-size:10px; color:var(--accent); flex:0 0 auto; }
+.admin-area .rail-mark span{ font-family:var(--font-label); font-weight:800; font-size:12px; letter-spacing:.08em; color:var(--rail-ink-active); }
+.admin-area .rail-list{ display:flex; flex-direction:column; flex-wrap:nowrap; flex:1; overflow-y:auto; overflow-x:hidden; padding:10px 0; gap:7px; }
+/* 15px left, a deliberate explicit value (not the item's own 14px).
+   margin-bottom is negative to cancel most of .rail-list's own gap:7px,
+   which padding alone can't reach - a flex gap sits between every sibling
+   pair regardless of either sibling's own padding, so the label still read
+   as floating 7px above its own section's first item even at padding-bottom:0. */
+.admin-area .rail-group-label{ font-family:var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.06em; color:var(--rail-ink); opacity:.6; padding:12px 16px 0 15px; margin-bottom:-5px; }
+.admin-area .rail-item{
+  position:relative; display:flex; align-items:center; justify-content:flex-start; gap:10px; width:100%; height:32px;
+  border:0; border-radius:0; background:transparent; box-shadow:none; color:var(--rail-ink); cursor:pointer; padding:0 16px 0 14px;
+  font-size:12px; font-weight:600; text-align:left; white-space:nowrap; text-decoration:none; transform:none; transition:none;
+}
+.admin-area .rail-item:hover,.admin-area .rail-item:active{ transform:none; box-shadow:none; }
+.admin-area .rail-item-code{ font-family:var(--font-mono); font-size:10px; font-weight:700; color:var(--ink-faint); width:26px; flex:0 0 auto; }
+.admin-area .rail-item:hover{ color:var(--rail-ink-active); background:color-mix(in srgb, var(--rail-ink-active) 8%, transparent); }
+.admin-area .rail-item.is-active{ color:var(--rail-ink-active); background:var(--sheet); }
+.admin-area .rail-item.is-active .rail-item-code{ color:var(--accent); }
+.admin-area .rail-item.is-active::before{ content:""; position:absolute; left:0; top:6px; bottom:6px; width:2px; background:var(--accent); }
+.admin-area .rail-dropdown-toggle{ list-style:none; }
+.admin-area .rail-dropdown-toggle::-webkit-details-marker{ display:none; }
+/* margin-left:auto on the caret itself, not justify-content:space-between on
+   the button - now that this button has a code span + label (two children,
+   not one), space-between would push those two apart from each other too;
+   margin-left:auto on just the trailing ::after pushes only the caret to the
+   far right, leaving the code+label pair using the same default packed
+   layout (and the same gap:10px) every other .rail-item already uses. */
+.admin-area .rail-dropdown-toggle::after{ content:"▾"; font-size:9px; color:var(--rail-ink); opacity:.6; transition:transform .15s ease; flex:0 0 auto; margin-left:auto; }
+.admin-area .rail-dropdown[open] .rail-dropdown-toggle::after{ transform:rotate(180deg); }
+.admin-area .rail-dropdown-panel{ display:flex; flex-direction:column; }
+.admin-area .rail-dropdown-panel .rail-item{ padding-left:34px; }
+.admin-area .rail-foot{ border-top:1px solid var(--rail-line); padding:10px 16px; display:flex; align-items:center; gap:9px; font-family:var(--font-mono); font-size:11px; color:var(--rail-ink); margin-top:auto; }
+.admin-area .rail-foot .dot{ width:6px; height:6px; border-radius:50%; background:var(--good); flex:0 0 auto; }
+.admin-area .rail-foot a{ color:var(--rail-ink); }
+.admin-area .rail-foot a:hover{ color:var(--rail-ink-active); }
+
+/* ---------- TITLE BLOCK (header) ---------- */
+.admin-area .head{ grid-column:2; grid-row:1; background:var(--sheet); border-bottom:1px solid var(--line); display:flex; flex-direction:row; flex-wrap:nowrap; align-items:center; justify-content:flex-start; position:static; gap:16px; padding:0 20px; }
+.admin-area .rail-toggle{ display:flex; align-items:center; justify-content:center; width:24px; height:24px; border:1px solid var(--line); background:transparent; color:var(--ink-dim); cursor:pointer; padding:0; flex:0 0 auto; }
+.admin-area .rail-toggle:hover{ color:var(--ink); border-color:var(--ink-dim); }
+.admin-area .stamp{ display:flex; flex-direction:row; flex-wrap:nowrap; align-items:center; gap:8px; font-family:var(--font-mono); font-size:11px; color:var(--ink-dim); white-space:nowrap; }
+.admin-area .stamp b{ color:var(--ink); font-weight:700; }
+.admin-area .stamp .sheet-no{ display:inline-flex; align-items:center; justify-content:center; height:20px; padding:0 7px; border:1px solid var(--accent); color:var(--accent); font-weight:800; font-size:10.5px; }
+.admin-area .stamp a{ color:var(--ink-dim); }
+.admin-area .stamp a:hover{ color:var(--ink); }
+.admin-area .stamp .sep{ color:var(--ink-faint); }
+.admin-area .find{ flex:1; max-width:300px; margin:0 auto; display:flex; align-items:center; gap:7px; border:1px solid var(--line); background:var(--paper); padding:5px 10px; }
+.admin-area .find span{ font-family:var(--font-mono); color:var(--ink-faint); font-size:11px; }
+.admin-area .find input{ border:0; background:transparent; outline:none; color:var(--ink); font:inherit; font-size:12px; width:100%; padding:0; margin:0; }
+.admin-area .find input::placeholder{ color:var(--ink-faint); }
+.admin-area .head-icon-btn{ position:relative; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); background:transparent; color:var(--ink-dim); cursor:pointer; flex:0 0 auto; }
+.admin-area .head-icon-btn:hover{ color:var(--ink); border-color:var(--ink-dim); }
+.admin-area .head-icon-btn .dot{ position:absolute; top:-4px; right:-4px; background:var(--accent); color:var(--sheet); font-family:var(--font-mono); font-size:9px; font-weight:800; padding:1px 4px; }
+
+/* ---------- CANVAS (main) ---------- */
+/* max-width:none + margin:0 are load-bearing, not decorative: index.php's
+   legacy inline stylesheet has a bare main{max-width:1180px;margin:34px auto}
+   rule for the public site, and <main class="canvas"> matches that selector
+   too. Without resetting both here explicitly, the canvas silently caps at
+   1180px regardless of what .sheet-inner's own max-width says - the same
+   unset-property-falls-through trap as everywhere else in this file. */
+.admin-area .canvas{ grid-column:2; grid-row:2; overflow-y:auto; overflow-x:hidden; min-width:0; max-width:none; margin:0; padding:24px 28px 60px; background:var(--paper); }
+/* Fluid, not stepped: stays at 1160px through normal desktop widths (68vw
+   doesn't overtake the floor until ~1710px), then grows continuously with
+   the viewport instead of jumping at fixed breakpoints, capping at 2200px
+   so it never gets absurdly wide on a huge display. */
+.admin-area .sheet-inner{ max-width:clamp(1160px, 68vw, 2200px); margin:0 auto; min-width:0; }
+/* Any table (schedule or bridged) scrolls itself sideways as one unit if
+   its content genuinely needs more room, instead of stretching the
+   canvas/page - stays display:table throughout so header/body columns
+   keep lining up (switching to display:block per-row breaks that). */
+.admin-area .schedule,.admin-area table{ display:table; max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.admin-area .sheet-inner[hidden]{ display:none; }
+
+.admin-area .title-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px; }
+.admin-area .title-row .kicker{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.08em; color:var(--accent); margin:0 0 4px; }
+.admin-area .title-row h1{ margin:0; font-size:21px; font-weight:800; letter-spacing:-.01em; }
+.admin-area .title-row p{ margin:4px 0 0; color:var(--ink-dim); font-size:12.5px; }
+.admin-area .title-row .rule{ flex:1; height:1px; background:var(--line); margin:0 14px 6px; min-width:40px; }
+.admin-area .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+/* ---------- Button hierarchy: 4 tiers by consequence, not just look ----------
+   Primary (bare .btn)     - the one action a view most wants you to take.
+   Secondary (.btn.ghost)  - everything else that changes something.
+   Tertiary (.btn.tertiary)- navigation, not action: Back/View/Cancel/Close.
+   Danger (.btn.danger)    - removes or destroys data; .solid for the
+                             irreversible kind, confirmed via dialog. */
+.admin-area .btn{ display:inline-flex; align-items:center; gap:5px; height:27px; min-height:27px; padding:0 10px; border:0; background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 100%,#fff 8%),var(--accent)); color:var(--paper); font:inherit; font-weight:700; font-size:12px; cursor:pointer; border-radius:6px; box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 16%,transparent),0 1px 2px color-mix(in srgb,#000 14%,transparent); transition:filter .12s ease; }
+.admin-area .btn:hover{ filter:brightness(1.06); }
+.admin-area .btn:active{ filter:brightness(.96); box-shadow:inset 0 1px 3px color-mix(in srgb,#000 20%,transparent); }
+.admin-area .btn.ghost{ background:var(--sheet); color:var(--ink); border:1px solid var(--line); box-shadow:none; }
+.admin-area .btn.ghost:hover{ border-color:color-mix(in srgb,var(--accent) 50%,var(--line)); background:var(--sheet-2); color:var(--ink); }
+.admin-area .btn.tertiary{ background:transparent; color:var(--ink-dim); border-color:transparent; padding-left:4px; padding-right:4px; text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--line); border-radius:4px; box-shadow:none; }
+.admin-area .btn.tertiary:hover{ background:transparent; color:var(--ink); text-decoration-color:var(--ink-dim); }
+.admin-area .btn.danger{ background:transparent; color:var(--danger); border:1px solid color-mix(in srgb,var(--danger) 55%,var(--line)); box-shadow:none; }
+.admin-area .btn.danger:hover{ background:var(--danger-wash); color:var(--danger); border-color:var(--danger); }
+.admin-area .btn.danger.solid{ background:linear-gradient(180deg,color-mix(in srgb,var(--danger) 100%,#fff 8%),var(--danger)); border:0; color:#fff; box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 16%,transparent); }
+.admin-area .btn.danger.solid:hover{ filter:brightness(1.08); }
+.admin-area .btn[disabled]{ opacity:.5; cursor:not-allowed; }
+
+.admin-area .panel{ position:relative; background:var(--sheet); box-shadow:var(--lift); margin-bottom:18px; }
+.admin-area .panel-head{ display:flex; align-items:center; justify-content:space-between; padding:11px 16px; border-bottom:1px solid var(--line); gap:10px; }
+.admin-area .panel-head h2{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim); margin:0; }
+.admin-area .panel-head .more{ font-family:var(--font-mono); font-size:11px; color:var(--accent); font-weight:700; }
+.admin-area .panel-body{ padding:16px; }
+.admin-area .panel-body > *:first-child{ margin-top:0; }
+/* A bare <table> doesn't reflow on narrow screens the way every other admin
+   component here does - rather than rebuild each one into a mobile card
+   layout individually (real work, screen-by-screen), a contained
+   horizontal scroll on the table's own wrapper keeps the page itself from
+   ever overflowing sideways, matching the pattern PaymentsAdminRoute.php
+   already used inline for its own table. :has() is already an established
+   pattern in this file (see .sheet-inner:has(> .docket-nav) above), so this
+   covers every current and future .panel-body/.recent table with one rule
+   instead of a wrapper div added to each screen individually. */
+/* overflow-y:hidden, not visible: CSS Overflow's "one axis non-visible
+   forces the other to compute as auto too" rule fires whenever EITHER
+   side is visible and the other isn't - it does not check which value
+   was authored, so overflow-y:visible here would still get silently
+   recomputed to auto exactly like the missing declaration did (confirmed
+   live: tried visible first, overflow-y stayed "auto" in getComputedStyle
+   regardless). hidden is a non-visible value, so it satisfies the rule on
+   its own terms instead of triggering it - confirmed live on the Order
+   edit page's Items panel, where a 1px rounding difference (979px table
+   in a 1011px panel, clientHeight 318px vs scrollHeight 319px) was enough
+   to draw full, clearly visible scrollbars on BOTH axes for a panel whose
+   content plainly fits. Panel height is always content-driven here, never
+   constrained, so nothing is ever actually clipped by going hidden. */
+.admin-area .panel:has(table),.admin-area .recent:has(table){ overflow-x:auto; overflow-y:hidden; }
+/* A <details class="panel"> with <summary class="panel-head"> - a collapsible
+   panel that looks exactly like every static one (sharp corners, .reg tick
+   marks, same head/body), for grouping (e.g. Installed Packages by type)
+   without introducing a visually different rounded-card style. */
+.admin-area details.panel > summary.panel-head{ cursor:pointer; list-style:none; }
+.admin-area details.panel > summary.panel-head::-webkit-details-marker{ display:none; }
+.admin-area details.panel > summary.panel-head::after{ content:"▾"; font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); flex:0 0 auto; transition:transform .15s ease; }
+.admin-area details.panel[open] > summary.panel-head::after{ transform:rotate(180deg); }
+
+.admin-area .callout{ display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:50%; border:1px solid var(--ink-dim); color:var(--ink-dim); font-family:var(--font-mono); font-size:9px; font-weight:700; flex:0 0 auto; }
+
+.admin-area .stampword{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:10px; font-weight:800; letter-spacing:.04em; padding:2px 7px; border:1.5px solid currentColor; text-transform:uppercase; transform:rotate(-1.2deg); background:transparent; }
+.admin-area .stampword.live{ color:var(--good); }
+.admin-area .stampword.draft{ color:var(--accent); }
+
+.admin-area .dim{ display:flex; align-items:center; gap:8px; margin:22px 0 14px; }
+.admin-area .dim:first-child{ margin-top:0; }
+.admin-area .dim .t{ flex:0 0 auto; font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-dim); }
+.admin-area .dim .l{ flex:1; height:1px; background:var(--line); position:relative; }
+.admin-area .dim .l::before,.admin-area .dim .l::after{ content:""; position:absolute; top:-3px; width:1px; height:7px; background:var(--line); }
+.admin-area .dim .l::before{ left:0; } .admin-area .dim .l::after{ right:0; }
+.admin-area .dim .more{ font-family:var(--font-mono); font-size:10.5px; color:var(--accent); font-weight:700; }
+
+.admin-area .schedule{ width:100%; border-collapse:collapse; }
+.admin-area .schedule th{ text-align:left; font-family:var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); padding:10px 16px; border-bottom:1px solid var(--line); }
+.admin-area .schedule td{ padding:9px 16px; border-bottom:1px solid var(--line); font-size:12.3px; vertical-align:middle; }
+.admin-area .schedule tr:hover td{ background:var(--sheet-2); }
+.admin-area .schedule tr:last-child td{ border-bottom:0; }
+.admin-area .schedule .no{ font-family:var(--font-mono); color:var(--ink-faint); font-size:10.5px; width:30px; }
+.admin-area .schedule .meta{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); margin-top:2px; }
+.admin-area .schedule a{ color:var(--accent); }
+
+.admin-area .stat-strip{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+.admin-area .stat{ flex:1; min-width:120px; background:var(--sheet); box-shadow:var(--lift); padding:11px 14px; }
+.admin-area .stat .v{ font-family:var(--font-mono); font-size:18px; font-weight:800; }
+.admin-area .stat .l{ font-size:10.5px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
+
+.admin-area .split{ display:grid; grid-template-columns:1fr 280px; gap:18px; align-items:start; }
+.admin-area .attn{ display:flex; align-items:center; gap:10px; padding:9px 16px; text-decoration:none; color:inherit; }
+.admin-area .attn + .attn{ border-top:1px solid var(--line); }
+.admin-area .attn:hover{ background:var(--sheet-2); }
+.admin-area .attn .sev{ width:7px; height:7px; flex:0 0 auto; }
+.admin-area .attn .sev.ok{ background:var(--good); } .admin-area .attn .sev.warn{ background:var(--warn); }
+.admin-area .attn .t{ flex:1; font-size:12px; font-weight:700; min-width:0; }
+.admin-area .attn .s{ font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); margin-top:1px; }
+
+/* ---------- DOCKET (settings shell, reused for any sheet-index + body pairing) ---------- */
+.admin-area .docket{ display:grid; grid-template-columns:200px minmax(0,1fr); box-shadow:var(--lift); background:var(--sheet); }
+/* Below the 1040px collapse, .docket goes single-column and the nav (9+
+   items across Site/System) would otherwise render fully expanded above
+   the actual content, forcing a scroll past the whole menu on every visit.
+   Ships `open` in the markup (desktop-safe default, zero JS needed there);
+   a small inline script in layout() removes `open` below 1040px on load. */
+.admin-area .docket-nav-wrap > summary{ display:none; }
+@media (max-width:1040px){
+  .admin-area .docket-nav-wrap{ margin-bottom:14px; box-shadow:var(--lift); }
+  .admin-area .docket-nav-wrap > summary{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    min-height:44px; padding:0 16px; background:var(--sheet-2); cursor:pointer; list-style:none;
+    font-family:var(--font-mono); font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink);
+  }
+  .admin-area .docket-nav-wrap > summary::-webkit-details-marker{ display:none; }
+  .admin-area .docket-nav-wrap > summary::after{ content:"\25be"; font-size:11px; color:var(--ink-faint); transition:transform .15s ease; }
+  .admin-area .docket-nav-wrap[open] > summary::after{ transform:rotate(180deg); }
+  /* .docket-nav{display:block} (further down) is unconditional and, at equal
+     or higher specificity, beats the native details:not([open]) UA hide
+     outright - confirmed live: without this line the nav stayed visibly
+     rendered even after JS removed `open`. */
+  .admin-area .docket-nav-wrap:not([open]) .docket-nav{ display:none; }
+  .admin-area .docket-nav-wrap .docket-nav{ border-top:1px solid var(--line); }
+}
+/* Auto-grid: any settings-cluster route that emits settings_tools_nav()
+   output directly (without an explicit .docket wrapper) still gets the
+   same 2-column shell for free, so every one of those route handlers
+   didn't need touching individually just to lay out correctly. */
+.admin-area .sheet-inner:has(> .docket-nav){ display:grid; grid-template-columns:200px minmax(0,1fr); gap:14px; align-items:start; }
+.admin-area .sheet-inner:has(> .docket-nav) > .docket-nav{ grid-column:1; grid-row:1/-1; background:var(--sheet-2); align-self:stretch; box-shadow:var(--lift); }
+.admin-area .sheet-inner:has(> .docket-nav) > *:not(.docket-nav){ grid-column:2; background:var(--sheet); box-shadow:var(--lift); padding:18px 22px; min-width:0; margin-bottom:0; }
+@media (max-width:1040px){
+  .admin-area .sheet-inner:has(> .docket-nav){ grid-template-columns:1fr; }
+  .admin-area .sheet-inner:has(> .docket-nav) > .docket-nav{ grid-column:1; grid-row:auto; }
+  .admin-area .sheet-inner:has(> .docket-nav) > *:not(.docket-nav){ grid-column:1; }
+}
+.admin-area .docket-nav{ display:block; background:var(--sheet-2); align-self:stretch; }
+.admin-area .docket-label{ font-family:var(--font-mono); font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); padding:12px 14px 5px; }
+.admin-area .docket-nav a{ display:flex; align-items:center; gap:7px; padding:6px 14px; font-size:11.8px; font-weight:600; color:var(--ink-dim); text-decoration:none; }
+.admin-area .docket-nav a::before{ content:""; width:4px; height:4px; border:1px solid var(--ink-faint); flex:0 0 auto; }
+.admin-area .docket-nav a:hover{ color:var(--ink); background:var(--sheet); }
+.admin-area .docket-nav a.is-current{ color:var(--accent); background:var(--sheet); font-weight:700; }
+.admin-area .docket-nav a.is-current::before{ background:var(--accent); border-color:var(--accent); }
+.admin-area .docket-nav a.sub{ padding-left:26px; font-size:11px; font-weight:500; }
+/* "General settings" collapses its 3 sub-tabs behind one summary toggle,
+   same <details> convention as the rail's "Ecommerce" dropdown - mirrors
+   .docket-nav a's own look (bullet marker, hover, is-current) since a
+   <summary> isn't an <a> and gets none of that for free. */
+.admin-area .docket-nav summary{ display:flex; align-items:center; gap:7px; padding:6px 14px; font-size:11.8px; font-weight:600; color:var(--ink-dim); cursor:pointer; list-style:none; }
+.admin-area .docket-nav summary::-webkit-details-marker{ display:none; }
+.admin-area .docket-nav summary::before{ content:""; width:4px; height:4px; border:1px solid var(--ink-faint); flex:0 0 auto; }
+.admin-area .docket-nav summary:hover{ color:var(--ink); background:var(--sheet); }
+.admin-area .docket-nav summary.is-current{ color:var(--accent); background:var(--sheet); font-weight:700; }
+.admin-area .docket-nav summary.is-current::before{ background:var(--accent); border-color:var(--accent); }
+.admin-area .docket-nav summary::after{ content:"▾"; margin-left:auto; font-size:9px; color:var(--ink-faint); opacity:.7; transition:transform .15s ease; }
+.admin-area .docket-nav details[open] summary::after{ transform:rotate(180deg); }
+.admin-area .docket-body{ padding:18px 22px; }
+.admin-area .field-block{ margin-bottom:20px; }
+.admin-area .field-block:last-child{ margin-bottom:0; }
+.admin-area .field-block h3{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 3px; }
+.admin-area .field-block .hint{ margin:0 0 12px; color:var(--ink-faint); font-size:11.5px; }
+/* The Advanced settings tab's announcement-bar live preview reuses the exact
+   .announcement-* classes the public site renders with (public-site.css) -
+   but public-site.css never loads on admin pages, so without these the
+   preview's close button had no positioning at all and fell out of the bar
+   entirely (below the text, in normal document flow). Same rules, admin-
+   scoped, matching public-site.css's .announcement-preview behavior
+   (marquee animation always off - a static, centered sample). */
+.admin-area .announcement-preview{ border-radius:10px; overflow:hidden; margin:12px 0 18px; }
+.admin-area .announcement-bar{ position:relative; display:flex; align-items:center; min-height:38px; overflow:hidden; background:var(--announcement-bg); color:var(--announcement-color); }
+.admin-area .announcement-track{ min-width:0; flex:1; overflow:hidden; }
+.admin-area .announcement-message{ display:flex; align-items:center; justify-content:center; gap:7px; min-height:38px; padding:7px 46px; font-size:.9rem; font-weight:750; letter-spacing:.015em; white-space:nowrap; animation:none!important; width:auto!important; }
+.admin-area .announcement-icon{ flex:none; }
+.admin-area .announcement-close{ position:absolute; right:8px; top:50%; transform:translateY(-50%); width:22px; height:22px; min-height:22px; margin:0; padding:0; border-radius:5px; background:transparent; color:inherit; border:1px solid currentColor; font-size:1rem; line-height:1; opacity:.75; }
+.admin-area .fgrid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.admin-area .fgrid.three{ grid-template-columns:1fr 1fr 1fr; }
+.admin-area .fslot.full{ grid-column:1/-1; }
+.admin-area .fslot{ display:flex; flex-direction:column; gap:4px; }
+.admin-area .fslot label{ font-family:var(--font-mono); font-size:9.5px; font-weight:700; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.03em; }
+.admin-area .fslot input,.admin-area .fslot select,.admin-area .fslot textarea{ border:1px solid var(--line); background:var(--paper); color:var(--ink); padding:6px 9px; font:inherit; font-size:12px; width:100%; border-radius:7px; box-shadow:inset 0 1px 3px color-mix(in srgb,#000 14%,transparent); transition:border-color .12s ease,box-shadow .12s ease; box-sizing:border-box; }
+.admin-area .fslot input:not([type=checkbox]):not([type=radio]),.admin-area .fslot select{ height:30px; padding-top:0; padding-bottom:0; }
+.admin-area .fslot .btn{ height:30px; min-height:30px; }
+.admin-area .fslot input:focus,.admin-area .fslot select:focus,.admin-area .fslot textarea:focus{ border-color:var(--accent); outline:none; box-shadow:inset 0 1px 3px color-mix(in srgb,#000 14%,transparent),0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent); }
+.admin-area .field-inline-btn{ display:flex; align-items:center; gap:8px; }
+.admin-area .field-inline-btn select{ flex:0 1 380px; min-width:0; }
+.admin-area .field-inline-btn .btn{ flex:none; white-space:nowrap; }
+.admin-area .check{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; margin-bottom:6px; }
+.admin-area .check input{ width:auto; }
+
+/* generic form fields outside a docket (login-style forms, quick forms) */
+.admin-area input:not([type=checkbox]):not([type=radio]):not(.find input),
+.admin-area select,.admin-area textarea{
+  border:1px solid var(--line); background:var(--paper); color:var(--ink); padding:7px 10px; font:inherit; font-size:12.5px; width:100%;
+  border-radius:7px; box-shadow:inset 0 1px 3px color-mix(in srgb,#000 14%,transparent); transition:border-color .12s ease,box-shadow .12s ease; box-sizing:border-box;
+}
+.admin-area input:not([type=checkbox]):not([type=radio]):not(.find input){ height:30px; padding-top:0; padding-bottom:0; }
+.admin-area input:focus,.admin-area select:focus,.admin-area textarea:focus{ border-color:var(--accent); outline:none; box-shadow:inset 0 1px 3px color-mix(in srgb,#000 14%,transparent),0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent); }
+/* select deliberately keeps its natural (padding-driven) height instead of the input's forced
+   30px/zero-padding box - empirically bisected (property-by-property, live on the podman
+   container): forcing an exact px height with zero vertical padding on a <select> corrupts the
+   paint of its closed-box display value specifically (renders as scattered antialiasing
+   fragments instead of legible glyphs - reproduced both headless and on a real Android device).
+   Input text isn't affected by the same rule. Auto height + real vertical padding is the
+   confirmed fix; do not reintroduce an exact height + zero padding on select. */
+.admin-area select{ appearance:none; -webkit-appearance:none; padding-right:24px; background-image:linear-gradient(45deg,transparent 50%,var(--ink-faint) 50%),linear-gradient(135deg,var(--ink-faint) 50%,transparent 50%); background-position:calc(100% - 13px) center,calc(100% - 9px) center; background-size:3.5px 3.5px,3.5px 3.5px; background-repeat:no-repeat; cursor:pointer; }
+.admin-area input[type=checkbox]{
+  width:18px; height:18px; min-width:18px; margin:0; appearance:none; -webkit-appearance:none;
+  border:1.5px solid var(--ink-faint); border-radius:5px; background:var(--sheet-2); cursor:pointer;
+  box-shadow:inset 0 1px 2px color-mix(in srgb,#000 16%,transparent);
+  display:inline-flex; align-items:center; justify-content:center; position:relative; flex:0 0 auto;
+  transition:background .13s ease,border-color .13s ease,box-shadow .13s ease;
+}
+.admin-area input[type=checkbox]:hover{ border-color:var(--accent); }
+.admin-area input[type=checkbox]:focus-visible{ outline:none; box-shadow:inset 0 1px 2px color-mix(in srgb,#000 16%,transparent),0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent); }
+.admin-area input[type=checkbox]:checked{
+  background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 100%,#fff 10%),var(--accent));
+  border-color:transparent;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 20%,transparent),0 2px 6px color-mix(in srgb,var(--accent) 40%,transparent);
+}
+.admin-area input[type=checkbox]:checked::after{
+  content:""; position:absolute; left:5px; top:1px; width:5px; height:9px;
+  border:solid var(--paper); border-width:0 2px 2px 0; transform:rotate(45deg);
+}
+.admin-area input[type=radio]{
+  width:18px; height:18px; min-width:18px; margin:0; appearance:none; -webkit-appearance:none;
+  border:1.5px solid var(--ink-faint); border-radius:50%; background:var(--sheet-2); cursor:pointer;
+  box-shadow:inset 0 1px 2px color-mix(in srgb,#000 16%,transparent);
+  display:inline-flex; align-items:center; justify-content:center; position:relative; flex:0 0 auto;
+  transition:border-color .13s ease,box-shadow .13s ease;
+}
+.admin-area input[type=radio]:hover{ border-color:var(--accent); }
+.admin-area input[type=radio]:focus-visible{ outline:none; box-shadow:inset 0 1px 2px color-mix(in srgb,#000 16%,transparent),0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent); }
+.admin-area input[type=radio]:checked{ border-color:var(--accent); }
+.admin-area input[type=radio]:checked::after{
+  content:""; width:9px; height:9px; border-radius:50%;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 100%,#fff 10%),var(--accent));
+  box-shadow:0 1px 3px color-mix(in srgb,var(--accent) 45%,transparent);
+}
+.admin-area input[type=color]{ padding:2px; height:32px; cursor:pointer; }
+.admin-area input[type=color]::-webkit-color-swatch-wrapper{ padding:0; }
+.admin-area input[type=color]::-webkit-color-swatch{ border:none; border-radius:4px; }
+.admin-area label:not(.check){ display:block; font-family:var(--font-mono); font-size:9.5px; font-weight:700; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.03em; }
+/* Trailing margin only for a label that stands alone (no wrapped field) - a
+   label now wrapping its own input/select/textarea (the accessible
+   for-free pattern used throughout this app) supplies its own internal
+   spacing via the rule below instead, so it doesn't need one too, which
+   would otherwise add unwanted extra height below the field itself. */
+.admin-area label:not(.check):not(:has(> input, > select, > textarea)){ margin-bottom:12px; }
+/* Internal spacing for a label wrapping its own field, replacing the gap
+   .fslot's flex `gap` used to provide when label and field were separate
+   siblings instead of nested (see above). */
+.admin-area label:not(.check) > input,.admin-area label:not(.check) > select,.admin-area label:not(.check) > textarea{ margin-top:4px; }
+.admin-area label:not(.check) input,.admin-area label:not(.check) select,.admin-area label:not(.check) textarea{ margin-top:5px; text-transform:none; font-weight:400; font-size:12.5px; }
+
+/* ---------- LAYOUT STUDIO ---------- */
+.admin-area .ls-shell{ display:grid; grid-template-columns:220px 1fr 260px; gap:16px; align-items:start; height:calc(100vh - 120px); }
+.admin-area .ls-col{ background:var(--sheet); box-shadow:var(--lift); height:100%; overflow-y:auto; }
+.admin-area .ls-col-head{ padding:11px 14px; border-bottom:1px solid var(--line); font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-dim); }
+.admin-area .comp-item{ display:flex; align-items:center; gap:9px; padding:9px 14px; border-bottom:1px solid var(--line); font-size:11.8px; font-weight:600; cursor:grab; }
+/* var(--ink-dim), not the original var(--ink-faint) - the faint tone reads
+   as a design token but computes to a real 3.7-4.3:1 contrast against
+   var(--sheet) depending on theme (measured across all 4 built-ins),
+   under WCAG's own 4.5:1 text guidance and uncomfortably close to its 3:1
+   floor for non-text UI. ink-dim is the same token every touch-target fix
+   elsewhere in this file already uses for exactly this reason. */
+.admin-area .comp-item .sq{ width:18px; height:18px; border:1px solid var(--ink-dim); flex:0 0 auto; }
+.admin-area .comp-item:hover{ background:var(--sheet-2); }
+.admin-area .comp-item .code{ margin-left:auto; font-family:var(--font-mono); font-size:9.5px; color:var(--ink-faint); }
+
+.admin-area .ls-canvas{ position:relative; background:var(--paper); box-shadow:var(--lift); padding:18px; overflow-y:auto; overflow-x:auto; max-width:900px; margin:0 auto; }
+.admin-area .ls-region{ position:relative; border:1.5px dashed var(--ink-faint); margin-bottom:14px; padding:24px 12px 12px; }
+.admin-area .ls-region-tag{ position:absolute; top:-9px; left:10px; background:var(--paper); padding:0 6px; font-family:var(--font-mono); font-size:9.5px; font-weight:700; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.04em; }
+.admin-area .ls-region.header{ min-height:44px; }
+.admin-area .ls-block{ position:relative; background:var(--sheet); border:1px solid var(--line); box-shadow:var(--lift); padding:12px 12px 18px; }
+.admin-area .ls-block.selected{ outline:1.5px solid var(--accent); outline-offset:2px; }
+.admin-area .ls-block-label{ font-size:12px; font-weight:800; }
+.admin-area .ls-block-sub{ font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); margin-top:2px; }
+.admin-area .ls-block-dim{ position:absolute; left:0; right:0; bottom:4px; display:flex; align-items:center; gap:5px; padding:0 12px; }
+.admin-area .ls-block-dim .l{ flex:1; height:1px; background:var(--ink-faint); opacity:.5; position:relative; }
+.admin-area .ls-block-dim .l::before,.admin-area .ls-block-dim .l::after{ content:""; position:absolute; top:-2px; width:1px; height:5px; background:var(--ink-faint); opacity:.5; }
+.admin-area .ls-block-dim .l::before{ left:0; } .admin-area .ls-block-dim .l::after{ right:0; }
+.admin-area .ls-block-dim .val{ font-family:var(--font-mono); font-size:8.5px; color:var(--ink-faint); white-space:nowrap; }
+.admin-area .ls-cols{ display:grid; gap:12px; }
+.admin-area .ls-cols.two{ grid-template-columns:1fr 1fr; }
+.admin-area .ls-cols.three{ grid-template-columns:1fr 1fr 1fr; }
+
+.admin-area .spec-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 14px; border-bottom:1px solid var(--line); }
+.admin-area .spec-row:last-child{ border-bottom:0; }
+.admin-area .spec-row .k{ font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.03em; }
+.admin-area .spec-row .v{ font-size:12px; font-weight:700; }
+.admin-area .spec-field{ padding:10px 14px; border-bottom:1px solid var(--line); }
+.admin-area .spec-field label{ display:block; font-family:var(--font-mono); font-size:9.5px; font-weight:700; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.03em; margin-bottom:5px; }
+.admin-area .spec-field input,.admin-area .spec-field textarea{ width:100%; border:1px solid var(--line); background:var(--paper); color:var(--ink); padding:6px 8px; font:inherit; font-size:12px; }
+
+/* ---------- extras beyond the sketch, same visual language ---------- */
+.admin-area .notice{ position:relative; background:var(--sheet); box-shadow:var(--lift); border-left:3px solid var(--accent); padding:10px 14px; font-size:12.3px; margin-bottom:14px; }
+.admin-area .notice.error{ border-left-color:var(--accent); }
+.admin-area .notice.success{ border-left-color:var(--good); }
+.admin-area .pager{ display:flex; align-items:center; justify-content:center; gap:8px; margin-top:16px; font-family:var(--font-mono); font-size:11px; }
+.admin-area .toolbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+.admin-area .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.admin-area .grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+.admin-area .tiles{ display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+.admin-area .tile{ position:relative; background:var(--sheet); box-shadow:var(--lift); padding:8px; }
+.admin-area .tile img,.admin-area .tile video{ width:100%; height:110px; object-fit:cover; display:block; background:var(--sheet-2); }
+.admin-area .tile .cap{ font-size:11px; margin-top:6px; color:var(--ink-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.admin-area .dropzone{ border:1.5px dashed var(--ink-faint); padding:24px; text-align:center; color:var(--ink-dim); font-size:12.5px; }
+
+/* Sub-nav strip - page-specific action tabs (Publishing sections, Media
+   type filters, Galleries actions) that don't fit the fixed-height title
+   block, rendered as the first thing inside the canvas instead. */
+.admin-area .subnav{ display:inline-flex; gap:2px; flex-wrap:wrap; margin-bottom:18px; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:2px; box-shadow:inset 0 1px 2px color-mix(in srgb,#000 12%,transparent); }
+.admin-area .header-action-btn{
+  display:inline-flex; align-items:center; gap:5px; height:24px; padding:0 8px; border:0; border-radius:5px;
+  background:transparent; color:var(--ink-faint); font-family:var(--font-mono); font-size:11px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.03em; text-decoration:none; cursor:pointer; transition:background .14s ease,color .14s ease;
+}
+.admin-area .header-action-btn:hover{ color:var(--ink-dim); }
+.admin-area .header-action-btn.is-active,.admin-area .header-action-btn.btn-primary{ background:var(--sheet); color:var(--ink); box-shadow:none; }
+
+/* ============================================================
+   COMPATIBILITY BRIDGE - genuinely new Blueprint styling for the
+   generic semantic classes (.card, table, form controls, .badge)
+   that dozens of route handlers still emit. These are NOT old-theme
+   styles carried forward - every value here is a fresh Blueprint
+   token (panel/schedule/stampword language), just applied to the
+   shorter class names so pages not yet hand-converted to the sketch's
+   own classes still render in the same real theme instead of
+   unstyled or the pre-Blueprint look.
+   ============================================================ */
+.admin-area .card,.admin-area .compact-card,.admin-area .modal-box{ position:relative; background:var(--sheet); color:var(--ink); box-shadow:var(--lift); padding:16px; margin-bottom:16px; }
+.admin-area .card h1,.admin-area .card h2,.admin-area .compact-card h2{ font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 10px; }
+.admin-area .card>.toolbar:first-child,.admin-area .card>*:first-child{ margin-top:0; }
+.admin-area .section-intro{ margin:0 0 16px; color:var(--ink-dim); font-size:12.3px; }
+.admin-area .toolbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+.admin-area .muted{ color:var(--ink-dim); font-size:12.3px; }
+.admin-area .field-help{ display:block; margin-top:3px; font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); }
+
+.admin-area .grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.admin-area .grid.three{ grid-template-columns:1fr 1fr 1fr; }
+
+/* Matches .btn's own default/hover pattern below rather than inventing a
+   second one: background+border on --accent, text on --paper (already the
+   correct-contrast pairing every theme's accent picks its paper color
+   against), hover only brightens rather than swapping colors. Previously
+   this used background:var(--ink) by default and swapped to
+   background:var(--accent)/color:var(--sheet) on hover - harmless on its
+   own, but every bare-button component that only overrides `color` on
+   hover (not `background`) - .studio-tab, .ls-viewtab, .ls-devicebtn,
+   .ls-spectab, .ls-segbtn - inherited that accent fill uncontested,
+   leaving their own ink-colored hover text sitting on an accent
+   background never designed to hold text, unreadable on several themes
+   (confirmed live: dark-grey's light-cyan accent under light ink text,
+   the new Light theme's medium-blue accent under dark ink text). Swapping
+   to a brightness filter removes the accent-fill hand-off entirely, so
+   every one of those components' existing hover rules becomes safe by
+   construction instead of needing five individual patches. */
+.admin-area button,.admin-area input[type=submit]{
+  display:inline-flex; align-items:center; gap:5px; height:27px; min-height:27px; padding:0 10px;
+  border:0; background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 100%,#fff 8%),var(--accent)); color:var(--paper);
+  font:inherit; font-weight:700; font-size:12px; cursor:pointer; border-radius:6px;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 16%,transparent),0 1px 2px color-mix(in srgb,#000 14%,transparent);
+  transition:filter .12s ease;
+}
+.admin-area button:hover{ filter:brightness(1.06); }
+.admin-area button:active{ filter:brightness(.96); }
+.admin-area button[disabled]{ opacity:.5; cursor:not-allowed; }
+.admin-area .btn.secondary,.admin-area button.secondary{ background:var(--sheet); color:var(--ink); border:1px solid var(--line); box-shadow:none; }
+.admin-area .btn.secondary:hover,.admin-area button.secondary:hover{ background:var(--sheet-2); color:var(--ink); border-color:var(--ink-dim); }
+
+.admin-area table{ width:100%; border-collapse:collapse; }
+.admin-area table thead th{ text-align:left; font-family:var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); padding:10px 12px; border-bottom:1px solid var(--line); }
+.admin-area table td{ padding:9px 12px; border-bottom:1px solid var(--line); font-size:12.3px; vertical-align:middle; }
+.admin-area table tr:hover td{ background:var(--sheet-2); }
+.admin-area table tr:last-child td{ border-bottom:0; }
+.admin-area table a{ color:var(--accent); }
+.admin-area .translation-key{ font-family:var(--font-mono); font-size:11px; }
+.admin-area .translation-table input{ margin:0; }
+
+.admin-area .badge{
+  display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:10px; font-weight:800;
+  letter-spacing:.03em; padding:2px 7px; border:1.5px solid currentColor; text-transform:uppercase; background:transparent; color:var(--ink-dim);
+}
+
+.admin-area .notice{ position:relative; background:var(--sheet); box-shadow:var(--lift); border-left:3px solid var(--accent); padding:10px 14px; font-size:12.3px; margin-bottom:14px; }
+
+.admin-area .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+@media (max-width:1040px){
+  .admin-area .split{ grid-template-columns:1fr; }
+  .admin-area .docket{ grid-template-columns:minmax(0,1fr); }
+  .admin-area .fgrid,.admin-area .fgrid.three,.admin-area .grid2,.admin-area .grid3{ grid-template-columns:1fr; }
+  .admin-area .ls-shell{ grid-template-columns:1fr; height:auto; }
+}
+
+/* Ultrawide scaling is now handled by the clamp() on --rail-w and
+   .sheet-inner's max-width directly (top of this file), not stepped
+   breakpoints here. */
+
+/* ---------- NARROW / PHONE - below this the rail can no longer share a
+   track with real content (198px alone is over half a 360-390px phone),
+   so it becomes a fixed overlay instead of a grid column; the existing
+   .rail-hidden toggle class still drives open/closed, just via
+   transform/width instead of a grid-track collapse. ---------- */
+@media (max-width:760px){
+  .admin-area .frame,.admin-area .frame.rail-hidden{ grid-template-columns:minmax(0,1fr); }
+  /* position:relative + a z-index above .rail's 600 keeps the toggle button
+     (the first thing in .head) clickable above the rail overlay in both its
+     open and closed states - .head defaults to position:static, which
+     z-index can't affect at all regardless of DOM order, so without this
+     the rail permanently covers its own close button once opened. */
+  .admin-area .head{ grid-column:1; padding:0 12px; gap:10px; position:relative; z-index:601; }
+  .admin-area .canvas{ grid-column:1; padding:16px 14px 40px; }
+  .admin-area .find{ display:none; }
+  .admin-area .rail{ position:fixed; top:0; left:0; bottom:0; width:250px; z-index:600; box-shadow:4px 0 24px rgba(0,0,0,.5); transition:width .15s ease; }
+  .admin-area .frame.rail-hidden .rail{ width:0; box-shadow:none; }
+  .admin-area .title-row{ margin-bottom:16px; }
+  .admin-area .title-row h1{ font-size:18px; }
+  .admin-area .stat{ min-width:0; flex:1 1 45%; }
+  .admin-area .spec-row .v,.admin-area .spec-row .k{ font-size:11px; }
+
+  /* Touch targets - .rail-item/.rail-toggle/.head-icon-btn/.btn/.ls-modal-close
+     are all desktop-authored at 24-32px, under the ~44px minimum recommended
+     for a finger (WCAG 2.5.5, platform HIGs). Scoped to this breakpoint
+     rather than global so desktop mouse-driven density is untouched. */
+  .admin-area .rail-item{ height:44px; font-size:13px; }
+  .admin-area .rail-toggle{ width:44px; height:44px; }
+  /* margin-left:auto - .find (the search form) is display:none at this width (see above), and it
+     was .find's flex:1 that pushed .head-icon-btn to the right edge of .head on desktop; without
+     its own spacer the bell now collapses to sit immediately after the breadcrumb instead of in
+     the corner. */
+  .admin-area .head-icon-btn{ width:44px; height:44px; margin-left:auto; }
+  .admin-area .btn{ height:44px; min-height:44px; padding:0 16px; }
+  /* !important: .ls-modal-close's real base rule (width/height:26px) is
+     declared later in this file than this media-query block, and both
+     selectors are equally specific - source order alone would let the
+     later, unconditional base rule win regardless of viewport, so this
+     needs !important to actually take effect on narrow screens. */
+  .admin-area .ls-modal-close{ width:44px!important; height:44px!important; }
+
+  /* Form fields - .fgrid already collapses to 1 column at 1040px (see that
+     breakpoint above), so the structural stacking is fine; what's missing
+     here is touch-appropriate sizing. font-size was 12px, under the 16px
+     iOS Safari uses as its own threshold for auto-zooming the page on
+     input focus (a jarring, unrequested zoom on every tap into a field);
+     padding was 6px vertical, giving a real tap height under 30px against
+     the ~44px minimum. !important: a separate, more specific rule
+     (`label:not(.check) input`, since every .fslot's input is wrapped in
+     exactly this markup) otherwise wins over this regardless of media
+     query or source order. */
+  .admin-area .fslot input:not([type=checkbox]):not([type=radio]),.admin-area .fslot select,.admin-area .fslot textarea{ padding:11px 12px!important; font-size:16px!important; }
+  .admin-area .fgrid{ gap:16px; }
+
+  /* .check (checkbox + short label, e.g. Nav Builder's "New tab"/"Visible"
+     toggles, "Sticky Sidebars") has no padding at all today, so the tap
+     target is just a native ~16px checkbox glyph plus tight-fitting text -
+     min-height plus padding gives the whole row a real touch target
+     without needing to fight cross-browser native checkbox sizing. */
+  .admin-area .check{ min-height:44px; padding:4px 0; }
+  .admin-area .check input{ width:20px; height:20px; flex:0 0 auto; }
+
+  /* Primary form-submit buttons are conventionally the form's last child
+     (`<button class="btn">...</button></form>`, true across every core
+     admin form - Create/Save account, Save details, Save changes, etc.).
+     Confirmed live via CDP at real mobile viewport heights (390x900): this
+     button sits below the fold with no visual cue the form continues, and
+     a tap at its true (partly off-screen) position lands on nothing -
+     the reported "nothing happens when I click Create account" bug.
+     .canvas is the actual scrolling container here (overflow-y:auto,
+     see base rule above), so position:sticky pins the button to the
+     bottom of the visible content pane, not just the document, with no
+     JS needed and no change to desktop behavior outside this breakpoint. */
+  .admin-area .panel-body form > button.btn:last-child{
+    position:sticky;
+    bottom:0;
+    z-index:5;
+    display:flex;
+    justify-content:center;
+    width:100%;
+    box-sizing:border-box;
+    margin-left:0;
+    margin-right:0;
+    box-shadow:0 -10px 14px -8px rgba(0,0,0,.35);
+  }
+}
+
+/* ---------- LAYOUT STUDIO - extensions beyond the sketch's static mock,
+   same visual language, needed to carry the screen's real functionality
+   (block library search/groups, view/device/spec tabs, drag states,
+   multi-slot containers, modals) ---------- */
+
+/* full-bleed workspace: this sheet-inner fills the canvas instead of
+   scrolling as a centered column like every other admin page. */
+.admin-area .canvas:has(.ls-sheet){ padding:0; overflow:hidden; display:flex; }
+.admin-area .ls-sheet{ max-width:none; width:100%; margin:0; padding:20px 28px; display:flex; flex-direction:column; height:100%; overflow:hidden; }
+.admin-area .ls-sheet .title-row{ flex:0 0 auto; }
+.admin-area .ls-sheet .ls-canvas-head{ flex:0 0 auto; }
+.admin-area .ls-sheet .ls-shell{ flex:1; min-height:0; }
+.admin-area .ls-cols.one{ grid-template-columns:1fr; }
+
+.admin-area .ls-canvas-head{ display:flex; align-items:center; gap:14px; margin-bottom:12px; flex-wrap:wrap; }
+.admin-area .ls-viewtabs{ display:flex; gap:2px; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:2px; box-shadow:inset 0 1px 2px color-mix(in srgb,#000 12%,transparent); }
+.admin-area .ls-viewtab{ background:transparent; border:0; padding:4px 8px; font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-faint); cursor:pointer; border-radius:7px; transition:background .14s ease,color .14s ease; }
+.admin-area .ls-viewtab:hover{ color:var(--ink-dim); }
+.admin-area .ls-viewtab.is-active{ background:var(--sheet); color:var(--ink); box-shadow:none; }
+.admin-area .ls-view{ display:none; }
+.admin-area .ls-view.is-active{ display:block; height:100%; }
+.admin-area .ls-canvas:has(.ls-view[data-canvas-view="website"].is-active){ max-width:none; margin:0; }
+.admin-area .ls-devices{ display:flex; gap:2px; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:2px; box-shadow:inset 0 1px 2px color-mix(in srgb,#000 12%,transparent); }
+.admin-area .ls-devicebtn{ background:transparent; border:0; color:var(--ink-faint); font-family:var(--font-mono); font-size:10px; font-weight:700; text-transform:uppercase; padding:4px 8px; cursor:pointer; border-radius:6px; transition:background .14s ease,color .14s ease; }
+.admin-area .ls-devicebtn:hover{ color:var(--ink-dim); }
+.admin-area .ls-devicebtn.is-active{ background:var(--accent); color:var(--paper); box-shadow:none; }
+.admin-area .ls-canvas-head .btn{ margin-left:auto; }
+
+/* v0.7-dev: website-profile switcher in Layout Studio's title-row - lets
+   the screen (and ERASED Studio's Layout tab, which embeds it) edit any
+   profile's own homepage draft, not just the active one. */
+.admin-area .ls-profile-switch{ display:inline-flex; align-items:center; gap:8px; margin-top:8px; }
+.admin-area .ls-profile-switch label{ font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); }
+.admin-area .ls-profile-switch select{ background:var(--sheet); border:1px solid var(--line); color:var(--ink); font:inherit; font-size:12px; padding:4px 8px; cursor:pointer; }
+.admin-area .ls-profile-switch select:hover{ border-color:var(--ink-dim); }
+.admin-area .ls-profile-note{ margin:6px 0 0; font-size:11.5px; color:var(--warn); }
+
+/* left column: component schedule / block library - flat single-line
+   .comp-item list, matching the sketch exactly (no groups/search/desc). */
+.admin-area .ls-lib-search-input{ width:100%; border:1px solid var(--line); background:var(--paper); color:var(--ink); padding:6px 9px; font:inherit; font-size:12px; }
+.admin-area .ls-lib-grid{ display:flex; flex-direction:column; }
+.admin-area .comp-item.is-dragging{ opacity:.4; }
+
+/* center column: the schematic itself */
+.admin-area .ls-map{ height:100%; overflow-y:auto; overflow-x:auto; padding:14px 2px 2px; }
+.admin-area .ls-frame-shell{ max-width:100%; margin:0 auto; transition:max-width .15s ease; }
+.admin-area .ls-map[data-viewport-device="tablet"] .ls-frame-shell{ max-width:760px; }
+.admin-area .ls-map[data-viewport-device="mobile"] .ls-frame-shell{ max-width:380px; }
+.admin-area .ls-map[data-viewport-device="tablet"] .ls-cols.three{ grid-template-columns:1fr 1fr; }
+.admin-area .ls-map[data-viewport-device="mobile"] .ls-cols.three,
+.admin-area .ls-map[data-viewport-device="mobile"] .ls-cols.two{ grid-template-columns:1fr; }
+.admin-area .ls-region.footer{ border-color:var(--warn); }
+.admin-area .ls-region-add{ position:absolute; top:-9px; right:10px; background:var(--paper); border:0.5px solid var(--line); color:var(--ink-dim); font-family:var(--font-mono); font-size:9.5px; font-weight:700; padding:1px 7px; cursor:pointer; }
+.admin-area .ls-region-add:hover{ color:var(--accent); border-color:var(--accent); }
+.admin-area .ls-region-empty{ border:1.5px dashed var(--ink-faint); padding:16px; text-align:center; font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); }
+.admin-area .ls-container-list{ display:flex; flex-direction:column; gap:10px; }
+.admin-area .ls-container-list.drag-over{ outline:1.5px dashed var(--accent); outline-offset:3px; }
+.admin-area .ls-container{ position:relative; }
+.admin-area .ls-container.is-dragging{ opacity:.4; }
+.admin-area .ls-container.ls-container-hidden{ opacity:.45; }
+.admin-area .ls-container.ls-container-hidden .ls-container-title::after{ content:"HIDDEN"; margin-left:8px; font-size:8px; letter-spacing:.05em; color:var(--warn,var(--accent)); border:0.5px solid currentColor; padding:1px 4px; }
+.admin-area .ls-container.ls-container-scheduled:not(.ls-container-hidden) .ls-container-title::after{ content:"TIMED"; margin-left:8px; font-size:8px; letter-spacing:.05em; color:var(--accent); border:0.5px solid currentColor; padding:1px 4px; }
+.admin-area .ls-container.ls-container-device-limited[data-hide-mobile] .ls-container-title::before{ content:"DESKTOP ONLY"; margin-right:8px; font-size:8px; letter-spacing:.05em; color:var(--ink-dim); border:0.5px solid currentColor; padding:1px 4px; }
+.admin-area .ls-container.ls-container-styled{ border-left:3px solid var(--accent); padding-left:9px; }
+.admin-area .ls-container.ls-container-device-limited[data-hide-desktop] .ls-container-title::before{ content:"MOBILE ONLY"; margin-right:8px; font-size:8px; letter-spacing:.05em; color:var(--ink-dim); border:0.5px solid currentColor; padding:1px 4px; }
+.admin-area .ls-container-width-badge{ display:inline-block; margin-left:8px; font-size:8px; letter-spacing:.05em; color:var(--good,var(--accent)); border:0.5px solid currentColor; padding:1px 4px; }
+.admin-area .ls-container-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.admin-area .ls-container-title{ font-family:var(--font-mono); font-size:9.5px; font-weight:700; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.02em; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+/* Move-up/move-down buttons - an unconditional alternative to dragging the
+   whole container card, since native HTML5 drag-and-drop has no touch
+   equivalent (see the matching JS comment near updateContainerMoveButtonStates).
+   Deliberately does NOT override .btn's height here - it must stay free to
+   pick up the ≥44px touch-target bump from the mobile breakpoint (see
+   admin-design-system.css's @media(max-width:760px) block), only padding is
+   tightened to fit this compact header context. */
+.admin-area .ls-container-move{ display:flex; gap:4px; flex:0 0 auto; }
+.admin-area .ls-container-move .btn{ padding:0 8px; }
+.admin-area .ls-container-move .btn:disabled{ opacity:.3; cursor:not-allowed; }
+.admin-area .ls-block-actions{ position:absolute; top:8px; right:8px; display:flex; gap:6px; opacity:0; transition:opacity .12s ease; }
+.admin-area .ls-block:hover .ls-block-actions{ opacity:1; }
+.admin-area .ls-container-gear{ flex:0 0 auto; width:20px; height:20px; padding:0; display:flex; align-items:center; justify-content:center; background:transparent; border:0.5px solid var(--line); color:var(--ink-dim); cursor:pointer; font-size:11px; }
+.admin-area .ls-container-gear:hover{ color:var(--accent); border-color:var(--accent); }
+.admin-area .ls-block-num{ font-family:var(--font-mono); font-size:8.5px; font-weight:700; color:var(--ink-faint); margin-right:8px; vertical-align:middle; }
+.admin-area .ls-block.drag-over{ outline:1.5px dashed var(--accent); outline-offset:2px; background:var(--accent-wash); }
+.admin-area .ls-block-label{ display:inline; margin-top:0; vertical-align:middle; }
+
+/* right column: spec sheet */
+.admin-area .ls-spec-identity{ display:flex; align-items:center; gap:9px; padding:12px 14px; border-bottom:1px solid var(--line); }
+.admin-area .ls-spec-icon{ width:30px; height:30px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; background:var(--sheet-2); color:var(--ink-dim); }
+.admin-area .ls-spec-identity-text{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.admin-area .ls-spec-identity-text strong{ font-size:12px; font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.admin-area .ls-spec-identity-text small{ font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); }
+.admin-area .ls-spectabs{ display:flex; gap:2px; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:2px; box-shadow:inset 0 1px 2px color-mix(in srgb,#000 12%,transparent); }
+.admin-area .ls-spectab{ flex:1; background:transparent; border:0; padding:5px 4px; font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--ink-faint); cursor:pointer; border-radius:6px; transition:background .14s ease,color .14s ease; }
+.admin-area .ls-spectab:hover{ color:var(--ink-dim); }
+.admin-area .ls-spectab.is-active{ background:var(--sheet); color:var(--ink); box-shadow:none; }
+.admin-area .ls-specpane{ display:none; }
+.admin-area .ls-specpane.is-active{ display:block; }
+.admin-area .ls-spec-group{ border-bottom:1px solid var(--line); }
+.admin-area .ls-spec-group summary{ padding:10px 14px; font-family:var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-dim); cursor:pointer; list-style:none; }
+.admin-area .ls-spec-group summary::-webkit-details-marker{ display:none; }
+.admin-area .ls-spec-group[open] summary{ color:var(--ink); border-bottom:1px solid var(--line); }
+.admin-area .spec-field.row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.admin-area .spec-field.row label{ margin-bottom:0; }
+.admin-area .spec-field.row input{ width:auto; }
+.admin-area .ls-spec-footer{ display:flex; gap:8px; padding:12px 14px; border-top:1px solid var(--line); margin-top:auto; }
+.admin-area .ls-spec-footer .btn{ flex:1; justify-content:center; }
+
+.admin-area .ls-seg{ display:flex; gap:2px; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:2px; box-shadow:inset 0 1px 2px color-mix(in srgb,#000 12%,transparent); }
+.admin-area .ls-segbtn{ flex:1; display:flex; align-items:center; justify-content:center; background:transparent; border:0; color:var(--ink-faint); font-size:11px; font-weight:600; padding:5px 4px; cursor:pointer; border-radius:6px; transition:background .14s ease,color .14s ease; }
+.admin-area .ls-segbtn:hover{ color:var(--ink-dim); }
+.admin-area .ls-segbtn.is-active{ background:var(--accent); color:var(--paper); box-shadow:none; }
+.admin-area .ls-segbtn:disabled{ opacity:.4; cursor:not-allowed; }
+
+/* live-preview iframe view */
+.admin-area .ls-preview-wrap{ height:100%; display:flex; align-items:flex-start; justify-content:center; overflow:auto; background:var(--sheet-2); padding:14px; }
+.admin-area .ls-preview-frame{ width:100%; height:100%; min-height:600px; border:1px solid var(--line); background:#fff; box-shadow:var(--lift); }
+.admin-area .ls-preview-wrap[data-device="tablet"] .ls-preview-frame{ width:760px; }
+.admin-area .ls-preview-wrap[data-device="mobile"] .ls-preview-frame{ width:380px; }
+
+/* modals */
+.admin-area .ls-modal[hidden]{ display:none; }
+.admin-area .ls-modal-backdrop{ position:fixed; inset:0; background:rgba(10,14,20,.55); z-index:1000; }
+.admin-area .ls-modal-dialog{ position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--sheet); box-shadow:var(--lift); border:1px solid var(--line); z-index:1001; max-height:90vh; overflow-y:auto; }
+.admin-area .ls-modal-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; border-bottom:1px solid var(--line); }
+.admin-area .ls-modal-head h3{ margin:0; font-size:13.5px; font-weight:800; }
+.admin-area .ls-modal-head small{ display:block; margin-top:2px; color:var(--ink-faint); font-size:11px; }
+.admin-area .ls-modal-close{ flex:0 0 auto; width:26px; height:26px; padding:0; display:flex; align-items:center; justify-content:center; line-height:1; background:transparent; border:1px solid var(--line); color:var(--ink-dim); cursor:pointer; }
+.admin-area .ls-modal-close:hover{ color:var(--accent); border-color:var(--accent); }
+.admin-area .ls-modal-body{ padding:16px 18px; }
+.admin-area .ls-picker-card{ position:relative; background:var(--sheet-2); border:1px solid var(--line); padding:10px 12px; }
+.admin-area .ls-picker-card strong{ display:block; font-size:12px; font-weight:700; margin-bottom:3px; }
+.admin-area .ls-picker-card p{ margin:0 0 8px; font-size:10.8px; color:var(--ink-faint); }
+.admin-area .ls-picker-card.is-selected{ outline:1.5px solid var(--accent); outline-offset:2px; }
+
+/* ============================================================
+   Bridge (cont.) - .admin-tabs/.admin-stat-*/.admin-row-* are old
+   semantic class names still emitted by Security Center and Comments
+   that never got Blueprint styling at all (zero matching rules) -
+   fresh tokens, same reasoning as the COMPATIBILITY BRIDGE above.
+   ============================================================ */
+.admin-area .admin-tabs{ display:inline-flex; flex-direction:row; flex-wrap:wrap; gap:2px; margin-bottom:16px; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:2px; box-shadow:inset 0 1px 2px color-mix(in srgb,#000 12%,transparent); }
+.admin-area .admin-tab{ background:transparent; border:0; border-radius:6px; padding:4px 9px; font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--ink-faint); cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:background .14s ease,color .14s ease; }
+.admin-area .admin-tab:hover{ color:var(--ink-dim); }
+.admin-area .admin-tab.is-active{ background:var(--sheet); color:var(--ink); box-shadow:none; }
+.admin-area .admin-tab.is-active .badge{ color:var(--sheet); border-color:var(--sheet); }
+
+.admin-area .admin-stat-row{ display:flex; flex-direction:row; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+.admin-area .admin-stat-chip{ display:flex; flex-direction:column; flex:1; min-width:120px; background:var(--sheet); box-shadow:var(--lift); padding:11px 14px; }
+.admin-area .admin-stat-value{ font-family:var(--font-mono); font-size:18px; font-weight:800; }
+.admin-area .admin-stat-value small{ font-size:11px; font-weight:600; color:var(--ink-faint); }
+.admin-area .admin-stat-label{ font-size:10.5px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
+
+.admin-area .admin-row-list{ display:flex; flex-direction:column; }
+.admin-area .admin-row{ display:flex; flex-direction:row; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); }
+.admin-area .admin-row:last-child{ border-bottom:0; }
+.admin-area .admin-row-body{ display:flex; flex-direction:column; min-width:0; }
+.admin-area .admin-row-title{ font-size:12.3px; font-weight:700; }
+.admin-area .admin-row-meta{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); margin-top:10px; }
+.admin-area .admin-row-actions{ display:inline-flex; flex-direction:row; flex-wrap:wrap; gap:2px; flex:0 0 auto; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:2px; box-shadow:inset 0 1px 2px color-mix(in srgb,#000 12%,transparent); }
+/* Edit/View/Delete read as one grouped, related action - not three
+   competing buttons - so every .btn variant inside this track is
+   flattened to the same plain pill chrome; only text/icon color still
+   tells Edit from View from Delete apart. */
+.admin-area .admin-row-actions .btn{ height:24px; padding:0 8px; background:transparent!important; border:0!important; box-shadow:none!important; border-radius:5px; color:var(--ink-dim); text-decoration:none; }
+.admin-area .admin-row-actions .btn:hover{ background:var(--sheet-2)!important; color:var(--ink); }
+.admin-area .admin-row-actions .btn.danger{ color:color-mix(in srgb,var(--danger) 82%,var(--ink-faint) 18%); }
+.admin-area .admin-row-actions .btn.danger:hover{ background:var(--danger-wash)!important; color:var(--danger); }
+.admin-area .admin-row-actions details{ flex:none; }
+.admin-area .admin-row-actions details[open]{ flex-basis:100%; }
+.admin-area .admin-row-actions summary{ list-style:none; }
+.admin-area .admin-row-actions summary::-webkit-details-marker{ display:none; }
+
+/* Kebab / overflow menu for secondary row actions (e.g. Comments: Spam, Delete).
+   Floats as a dropdown instead of the shared details[open]{flex-basis:100%} rule
+   above, which is meant for inline-expanding content like the Reply form. */
+.admin-area .admin-row-actions details.row-menu{ position:relative; }
+.admin-area .admin-row-actions details.row-menu[open]{ flex-basis:auto; }
+.admin-area .row-menu-btn{ width:26px; padding:0; text-align:center; justify-content:center; font-size:13px; line-height:1; }
+.admin-area .row-menu-panel{
+  position:absolute; right:0; top:calc(100% + 4px); z-index:20;
+  display:flex; flex-direction:column; gap:6px;
+  background:var(--sheet); border:1px solid var(--line); box-shadow:var(--lift);
+  padding:8px; min-width:150px;
+}
+.admin-area .admin-row-actions .row-menu-panel .btn{ width:100%; justify-content:flex-start; background:var(--sheet)!important; border:1px solid var(--line)!important; border-radius:6px; color:var(--ink); }
+.admin-area .admin-row-actions .row-menu-panel .btn:hover{ background:var(--sheet-2)!important; }
+.admin-area .admin-row-actions .row-menu-panel .btn.danger{ color:var(--danger); border-color:color-mix(in srgb,var(--danger) 55%,var(--line))!important; }
+.admin-area .admin-row-actions .row-menu-panel .btn.danger:hover{ background:var(--danger-wash)!important; }
+
+.admin-area .comment-clamp summary{ cursor:pointer; list-style:none; margin-top:8px; }
+.admin-area .comment-clamp summary::-webkit-details-marker{ display:none; }
+.admin-area .comment-clamp summary .clamp-text{ display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:4; overflow:hidden; font-size:12.5px; line-height:1.55; color:var(--ink); }
+.admin-area .comment-clamp summary .clamp-cta{ display:inline-block; margin-top:4px; font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); text-decoration:underline; }
+.admin-area .comment-clamp summary .clamp-cta-less{ display:none; }
+.admin-area .comment-clamp[open] summary .clamp-text,
+.admin-area .comment-clamp[open] summary .clamp-cta-more{ display:none; }
+.admin-area .comment-clamp[open] summary .clamp-cta-less{ display:inline-block; }
+.admin-area .comment-clamp .clamp-full{ display:none; margin:8px 0 0; font-size:12.5px; line-height:1.55; color:var(--ink); }
+.admin-area .comment-clamp[open] .clamp-full{ display:block; }
+.admin-area .admin-row-empty{ padding:16px 0; color:var(--ink-faint); font-size:12.3px; }
+
+/* ---------- Layout Studio, mobile (<760px) ----------
+   Map View's dashed-border regions + absolutely-positioned "fieldset
+   legend" tags are a scaled schematic of the desktop page, not a native
+   list - shrinking that diagram into 380px is what produced the
+   overflowing "GLOBAL HEADER - FIXED ---->" label seen on a real phone.
+   Real competitor research (Wix's separate Mobile Editor, Shopify's
+   theme editor switching to a stacked list + bottom sheet below a width
+   threshold, Webflow/Squarespace/WordPress all keeping full structural
+   editing desktop-only) converges on the same answer: replace the
+   diagram with a plain list on narrow screens rather than resizing it.
+   Desktop/tablet keep the exact diagram unchanged - this block only
+   fires below 760px. */
+@media (max-width:760px){
+  /* Desktop treats this whole screen as a fixed-height, internally-flexed
+     3-pane app shell (palette | canvas | inspector, each individually
+     overflow:auto so none of them ever need the outer page to scroll) -
+     confirmed live this stayed in effect even after .ls-shell dropped to a
+     single column below 1040px, trapping the whole Map View diagram inside
+     a ~150px scrollable box nested inside the page rather than letting it
+     flow naturally. A real list needs the page itself to scroll, the way
+     every other admin screen already works, so this unwinds the fixed
+     app-shell sizing down to plain flow below the mobile breakpoint. */
+  .admin-area .canvas:has(.ls-sheet){ overflow:visible; display:block; }
+  .admin-area .ls-sheet{ height:auto; overflow:visible; display:block; }
+  .admin-area .ls-sheet .ls-shell{ flex:none; }
+  .admin-area .ls-col{ height:auto; overflow-y:visible; }
+  .admin-area .ls-map{ height:auto; overflow-y:visible; }
+  .admin-area .ls-canvas{ overflow-y:visible; max-height:none; }
+
+  /* Component Schedule rows were missed by the earlier touch-target pass -
+     37px measured row height (9px padding + 11.8px text) against the same
+     44px minimum every other Layout Studio control was bumped to. */
+  .admin-area .comp-item{ min-height:44px; padding:9px 14px; font-size:13px; }
+  .admin-area .comp-item .sq{ width:20px; height:20px; }
+
+  .admin-area .ls-region{ border:none; padding:0; margin-bottom:22px; }
+  .admin-area .ls-region-tag{
+    position:static; display:block; background:none; padding:0 0 8px;
+    font-size:10.5px; letter-spacing:.06em;
+  }
+  .admin-area .ls-region-add{ position:static; display:block; width:100%; margin:0 0 8px; padding:10px; text-align:center; }
+  .admin-area .ls-cols.three,.admin-area .ls-cols.two{ grid-template-columns:1fr; }
+
+  /* The Container Options gear is opacity:0 until :hover by default - there
+     is no hover state on a touchscreen, so it has been fully invisible and
+     untappable on mobile regardless of any width fix. Content editing
+     itself was never blocked (tapping a block already selects it and
+     populates the Spec Sheet, see selectSlot() in the page's own script),
+     but per-container placement/visibility settings behind this gear were
+     undiscoverable. Always show it here instead of only revealing it on
+     hover. */
+  .admin-area .ls-block-actions{ position:static; opacity:1; margin-top:8px; justify-content:flex-end; }
+  .admin-area .ls-block-dim{ position:static; margin-top:6px; }
+  .admin-area .ls-container-gear{ width:32px; height:32px; font-size:14px; }
+
+  /* Container Options opens as a small centered dialog by default - a
+     bottom sheet (full width, anchored to the bottom edge) is the more
+     natural touch pattern and matches Shopify's own mobile theme editor. */
+  .admin-area .ls-modal-dialog{
+    left:0; right:0; bottom:0; top:auto; transform:none;
+    width:100%; max-width:100%; max-height:80vh;
+    border-radius:14px 14px 0 0; border-bottom:none;
+  }
+}
+
+/* ---------- Appearance tool tabs (Themes / Branding & Logos / Homepage Studio) ---------- */
+.admin-area .apptabs{ display:flex; gap:4px; flex-wrap:wrap; margin:0 0 18px; border-bottom:1px solid var(--line); }
+.admin-area .apptabs a{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-dim); text-decoration:none; padding:9px 4px; margin-bottom:-1px; border-bottom:2px solid transparent; }
+.admin-area .apptabs a:hover{ color:var(--ink); }
+.admin-area .apptabs a.active{ color:var(--accent); border-bottom-color:var(--accent); }
+
+/* ---------- Theme picker cards ---------- */
+.admin-area .theme-card-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+.admin-area .theme-card{ position:relative; display:flex; flex-direction:column; border:1px solid var(--line); background:var(--sheet-2); cursor:pointer; overflow:hidden; }
+.admin-area .theme-card input{ position:absolute; opacity:0; width:0; height:0; }
+.admin-area .theme-card:hover{ border-color:var(--ink-faint); }
+.admin-area .theme-card:has(input:checked){ outline:2px solid var(--accent); outline-offset:-2px; }
+.admin-area .theme-card-swatch{ height:64px; display:block; }
+.admin-area .theme-card-swatch.dark-green{ background:linear-gradient(135deg,#0c130f 0 50%,#18221c 50%); }
+.admin-area .theme-card-swatch.dark-grey{ background:linear-gradient(135deg,#0d2440 0 50%,#123055 50%); }
+.admin-area .theme-card-swatch.light-grey{ background:linear-gradient(135deg,#eef3f8 0 50%,#155f9e 50%); }
+.admin-area .theme-card-swatch.ops-deck{ background:linear-gradient(135deg,#05070a 0 50%,#ffb000 50%); }
+.admin-area .theme-card-swatch.dark{ background:linear-gradient(135deg,#15171a 0 50%,#22262b 50%); }
+.admin-area .theme-card-swatch.custom{ background:repeating-linear-gradient(135deg,var(--sheet-2) 0 10px,var(--sheet) 10px 20px); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:9px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); }
+.admin-area .theme-card-swatch.custom::after{ content:"custom"; }
+.admin-area .theme-card-swatch.theme-matte-grey{ background:linear-gradient(135deg,#a8a8a3 0 50%,#b8b8b3 50%); }
+.admin-area .theme-card-swatch.theme-cyberpunk{ background:linear-gradient(135deg,#121613 0 50%,#1f2621 50%); }
+.admin-area .theme-card-swatch.theme-minimal{ background:linear-gradient(135deg,#ffffff 0 50%,#f4f4f4 50%); border:1px solid #111; }
+.admin-area .theme-card-swatch.theme-corporate{ background:linear-gradient(135deg,#dbe3f0 0 50%,#0f1d38 50%); }
+.admin-area .theme-card-swatch.theme-glass{ background:linear-gradient(135deg,#2b1055 0%,#4a3a8f 45%,#6f97d6 75%,#1b1035 100%); }
+.admin-area .theme-card-body{ padding:10px 12px; display:flex; flex-direction:column; gap:2px; }
+.admin-area .theme-card-body strong{ font-size:12.5px; }
+.admin-area .theme-card-body small{ font-size:11px; color:var(--ink-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.admin-area .appearance-pointer{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; padding:16px; }
+.admin-area .appearance-pointer p{ margin:0; max-width:56ch; }
+
+/* ============================================================
+   Bridge (cont. 2) - closes the remaining legacy-class dependents:
+   Media library detail view, the content editor's modal/picker/
+   status/preview chrome, Users' Account Security panel, Payments'
+   provider panel + save bar, and the settings sub-nav strip. Same
+   reasoning as the COMPATIBILITY BRIDGE above - fresh Blueprint
+   tokens applied to class names dozens of route handlers still emit.
+   ============================================================ */
+.admin-area .settings-subnav{ display:flex; gap:6px; flex-wrap:wrap; margin:0 0 18px; padding:8px; background:var(--sheet); border:1px solid var(--line); }
+.admin-area .settings-subnav a{ font-weight:700; color:var(--ink-dim); text-decoration:none; padding:8px 12px; }
+.admin-area .settings-subnav a.active{ background:var(--accent); color:var(--sheet); }
+
+.admin-area .password-guidance{ display:block; margin:-7px 0 12px; font-size:11.5px; color:var(--ink-faint); line-height:1.35; }
+
+.admin-area .account-security-panel{ margin:4px 0 16px; padding:16px; border:1px solid var(--line); background:var(--sheet); }
+.admin-area .account-security-panel h3{ margin:0 0 12px; font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim); }
+.admin-area .account-security-options{ display:grid; gap:10px; }
+.admin-area label.account-security-option{ display:flex; align-items:center; justify-content:space-between; gap:20px; margin:0; padding:12px 14px; border:1px solid var(--line); background:var(--sheet-2); }
+.admin-area .account-security-option span{ display:grid; gap:3px; }
+.admin-area .account-security-option strong{ font-size:12.3px; }
+.admin-area .account-security-option small{ color:var(--ink-dim); line-height:1.35; }
+.admin-area .account-security-option input[type=checkbox]{ width:18px; height:18px; min-width:18px; margin:0; }
+
+.admin-area .provider-panel{ margin-top:16px; padding-top:16px; border-top:1px solid var(--line); }
+.admin-area .provider-panel h2{ margin:0 0 12px; font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim); }
+.admin-area .provider-panel[hidden]{ display:none !important; }
+.admin-area .form-actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
+.admin-area .form-actions button{ margin:0; }
+
+.admin-area .modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:99999; padding:5vh 20px; overflow:auto; }
+.admin-area .modal.open{ display:block; }
+.admin-area .picker-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+.admin-area .picker-item{ background:var(--sheet-2); border:1px solid var(--line); padding:8px; cursor:pointer; color:var(--ink); min-width:0; overflow:hidden; display:flex; flex-direction:column; gap:8px; text-align:left; }
+.admin-area .picker-item img,.admin-area .picker-item video{ display:block; width:100%; height:100px; max-width:100%; object-fit:cover; background:var(--paper); }
+.admin-area .picker-item small{ display:block; width:100%; min-width:0; line-height:1.3; overflow-wrap:anywhere; word-break:break-word; white-space:normal; color:var(--ink-faint); }
+.admin-area .editor-status{ display:flex; justify-content:space-between; gap:12px; padding:7px 10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--ink-dim); }
+.admin-area .editor-preview{ display:none; padding:18px; min-height:420px; background:var(--paper); }
+.admin-area .editor-preview.active{ display:block; }
+
+.admin-area .media-controls{ display:flex; gap:12px; align-items:center; justify-content:space-between; margin:0 0 14px; }
+.admin-area .media-controls input{ margin:0; max-width:420px; }
+.admin-area .media-size-tools{ display:flex; gap:7px; }
+.admin-area .media-library-layout{ display:grid; grid-template-columns:minmax(0,1fr) minmax(420px,500px); gap:18px; align-items:start; }
+.admin-area .media-browser{ display:grid; grid-template-columns:repeat(auto-fill,minmax(128px,1fr)); gap:10px; }
+.admin-area .media-browser.media-small{ grid-template-columns:repeat(auto-fill,minmax(94px,1fr)); }
+.admin-area .media-tile{ position:relative; overflow:hidden; display:flex; flex-direction:column; gap:5px; padding:7px; border:1px solid var(--line); background:var(--sheet-2); color:var(--ink); text-decoration:none; min-width:0; }
+.admin-area .media-tile:hover,.admin-area .media-tile.selected{ border-color:var(--accent); }
+.admin-area .media-tile img,.admin-area .media-tile video,.admin-area .media-file-icon{ width:100%; aspect-ratio:1/1; object-fit:cover; background:var(--paper); }
+.admin-area .media-tile video{ height:96px; aspect-ratio:auto; background:#000; }
+.admin-area .media-file-icon{ display:grid; place-items:center; font-weight:900; color:var(--accent); }
+.admin-area .media-tile span{ font-size:11.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.admin-area .media-tile small{ font-size:10.5px; color:var(--ink-faint); }
+.admin-area .media-kind-badge{ position:absolute; top:8px; right:8px; padding:3px 6px; background:#000b; color:#fff; font-size:10px; font-weight:800; }
+.admin-area .media-details{ position:sticky; top:90px; margin:0; }
+.admin-area .media-detail-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+.admin-area .media-detail-head h2{ font-family:var(--font-mono); font-size:12.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-dim); margin:0; word-break:break-word; }
+.admin-area .media-detail-preview{ width:100%; height:auto; max-height:520px; object-fit:contain; background:var(--paper); margin:10px 0 14px; }
+.admin-area .media-detail-video{ display:block; width:100%; max-height:420px; margin:0 0 16px; background:#000; }
+.admin-area .media-preview-link{ display:block; }
+.admin-area .media-preview-link:hover .media-detail-preview{ outline:1px solid var(--accent); }
+.admin-area .media-empty{ min-height:220px; display:grid; place-content:center; text-align:center; color:var(--ink-faint); }
+.admin-area .media-empty-list{ grid-column:1/-1; }
+.admin-area .media-upload-card{ padding:16px; }
+.admin-area .media-upload-card .dropzone{ padding:16px; }
+.admin-area .media-upload-card p{ margin:5px 0; }
+.admin-area .media-upload-card input{ margin-bottom:5px; }
+@media (max-width:850px){
+  .admin-area .media-library-layout{ grid-template-columns:1fr; }
+  .admin-area .media-details{ position:static; }
+  .admin-area .media-controls{ align-items:stretch; flex-direction:column; }
+  .admin-area .media-controls input{ max-width:none; }
+}
+
+.admin-area .navigation-builder-list{ display:grid; gap:8px; }
+.admin-area .navigation-builder-row{ display:grid; grid-template-columns:34px minmax(140px,1fr) minmax(160px,1fr) minmax(120px,.7fr) auto auto auto; gap:8px; align-items:center; padding:10px; border:1px solid var(--line); border-radius:9px; background:var(--sheet); }
+.admin-area .navigation-builder-row.dragging{ opacity:.45; }
+.admin-area .navigation-drag{ cursor:grab; text-align:center; font-size:1.2rem; color:var(--ink-faint); }
+.admin-area .nav-row-toggles{ display:flex; flex-direction:column; gap:2px; }
+/* Move-up/move-down buttons - an unconditional alternative to drag reorder
+   (see the matching JS comment), not a device-detected replacement, so they
+   need no special mobile-only visibility rule, just normal .btn styling. */
+.admin-area .nav-row-move{ display:flex; gap:4px; }
+.admin-area .nav-row-move .btn{ padding:0 8px; }
+.admin-area .nav-row-move .btn:disabled{ opacity:.3; cursor:not-allowed; }
+@media(max-width:900px){
+  /* grid-template-columns:28px 1fr left the row's other 4 children (URL,
+     target, toggles, delete) auto-placed two-per-implicit-row into just
+     those 2 tracks - a zigzag, not a stack, since CSS grid auto-flow wraps
+     by filling defined columns left-to-right rather than one child per
+     row. A single 1fr column makes every child its own full-width row,
+     which reads correctly at phone widths; a proper multi-row card layout
+     (drag+label+delete on one line, URL+target+toggles on another) is
+     follow-up work, not required to stop the current visible overflow. */
+  .admin-area .navigation-builder-row{ grid-template-columns:1fr; gap:6px; }
+  .admin-area .navigation-builder-row>*{ min-width:0; }
+}
+
+.admin-area .studio-tabs{ display:flex; gap:2px; background:var(--paper); border:1px solid var(--line); border-radius:9px; padding:3px; margin-bottom:16px; flex-wrap:wrap; box-shadow:inset 0 1px 2px color-mix(in srgb,#000 12%,transparent); }
+.admin-area .studio-tab{ background:transparent; border:0; padding:4px 9px; font-size:12px; font-weight:700; color:var(--ink-faint); cursor:pointer; border-radius:5px; transition:background .14s ease,color .14s ease,box-shadow .14s ease; }
+.admin-area .studio-tab:hover{ color:var(--ink-dim); }
+.admin-area .studio-tab.is-active{ background:var(--sheet); color:var(--ink); box-shadow:none; }
+.admin-area .studio-pane{ display:none; }
+.admin-area .studio-pane.is-active{ display:block; }
+.admin-area .studio-iframe{ width:100%; height:78vh; min-height:520px; border:1px solid var(--line); border-radius:10px; background:var(--sheet); }
+
+/* Unlike every other line in this group, this help text is a bare sibling
+   with no .spec-field wrapper of its own, so it had none of the panel's
+   usual 14px horizontal padding - sat flush against the left edge instead
+   of aligned with the checkbox row above it. Padded to match. Margins are
+   deliberately asymmetric: real space above separates it from the
+   unrelated RSS checkbox row, a small gap below keeps it visually grouped
+   with the icon+URL row it's actually describing - it's a label for what's
+   below it, not a caption for what's above (an earlier pass had this
+   backwards: glued to the checkbox, adrift from its own field). */
+.admin-area .social-help{ padding:0 14px; margin-top:12px; margin-bottom:4px; }
+.admin-area .social-icon-picker-row{ display:flex; flex-direction:row; align-items:center; gap:8px; margin-bottom:4px; max-width:440px; border-bottom:0; }
+/* A <details> styled as a compact, icon-only select: closed is just the
+   platform's icon at its own natural size (name available as a tooltip/
+   aria-label only, not visible text) - no wide labeled trigger bar. Open
+   emerges a small floating grid of every platform's icon, sized to the
+   trigger rather than the row's full width, instead of a permanently-
+   visible grid repeated per row (8 rows x 15 icons was the original bulk
+   being complained about) or a full-width labeled list (the follow-up
+   still had more visual weight than a plain icon choice needs). Floating
+   (position:absolute) so opening it overlays instead of pushing the URL
+   field and rows below it down the page. */
+.admin-area .social-icon-picker{ position:relative; flex:0 0 auto; border:1px solid var(--line); border-radius:7px; background:var(--panel-2); }
+.admin-area .social-icon-picker[open]{ background:var(--panel); border-color:var(--accent); z-index:41; }
+.admin-area .social-icon-picker-trigger{ display:flex; align-items:center; justify-content:center; width:26px; height:26px; cursor:pointer; list-style:none; color:var(--ink-dim); border-radius:5px; }
+.admin-area .social-icon-picker-trigger::-webkit-details-marker{ display:none; }
+.admin-area .social-icon-picker-trigger:hover{ background:var(--sheet-2); color:var(--ink); }
+.admin-area .social-icon-picker[open] .social-icon-picker-trigger{ color:var(--accent); }
+.admin-area .social-icon-picker-trigger-icon{ display:inline-flex; }
+.admin-area .social-icon-picker-trigger-icon svg{ width:14px; height:14px; fill:currentColor; }
+/* The emerging panel itself: always display:grid (overrides the native
+   <details> UA rule that display:none-s non-summary content while closed)
+   so open/close can animate via opacity+transform+visibility instead of
+   snapping - visibility's transition is delayed on the way out so the
+   fade/slide plays first, and switches immediately on the way in. */
+.admin-area .social-icon-picker-list{
+  display:grid; grid-template-columns:repeat(5,28px); gap:3px;
+  position:absolute; left:0; top:calc(100% + 4px); z-index:40; width:max-content;
+  margin:0; padding:5px; border:1px solid var(--line); border-radius:8px;
+  background:var(--panel); box-shadow:var(--lift);
+  max-height:180px; overflow-y:auto;
+  opacity:0; visibility:hidden; transform:translateY(-6px) scale(.98);
+  pointer-events:none;
+  transition:opacity .14s ease, transform .14s ease, visibility 0s linear .14s;
+}
+.admin-area .social-icon-picker[open] > .social-icon-picker-list{
+  opacity:1; visibility:visible; transform:translateY(0) scale(1);
+  pointer-events:auto;
+  transition:opacity .14s ease, transform .14s ease, visibility 0s linear 0s;
+}
+.admin-area .social-icon-choice{ display:flex; align-items:center; justify-content:center; width:28px; height:28px; padding:0; border:1px solid transparent; border-radius:5px; background:transparent; color:var(--ink-dim); cursor:pointer; transition:border-color .15s,color .15s,background .15s; }
+.admin-area .social-icon-choice svg{ width:15px; height:15px; fill:currentColor; }
+.admin-area .social-icon-choice:hover{ color:var(--ink); background:var(--sheet-2); }
+.admin-area .social-icon-choice.is-selected{ color:var(--accent); border-color:var(--accent); background:color-mix(in srgb,var(--accent) 14%,transparent); }
+.admin-area .social-icon-picker-row input[type="text"]{ margin:0; flex:1; min-width:0; height:26px; padding:0 8px; font-size:11.5px; }
+.admin-area .social-icon-picker-row[hidden]{ display:none; }
+/* "x" to clear+re-collapse a revealed row - matches the icon-choice tiles'
+   own footprint so the row's three controls (icon trigger, URL, remove)
+   read as one aligned unit. */
+.admin-area .social-icon-row-remove{ display:flex; align-items:center; justify-content:center; flex:0 0 auto; width:22px; height:22px; padding:0; border:0; border-radius:5px; background:transparent; color:var(--ink-faint); font-size:15px; line-height:1; cursor:pointer; }
+.admin-area .social-icon-row-remove:hover{ color:var(--danger); background:var(--danger-wash); }
+/* Padded/bordered like every other row in this panel (.spec-field's own
+   10px/14px) so the button lines up with the fields above it instead of
+   sitting flush against the panel edges, plus real breathing room below
+   it so it doesn't touch the next group's (Newsletter Subscribe) top
+   border. Also carries the RSS toggle right next to it (not
+   space-between'd to the far edge - kept close on purpose, one compact
+   control bar instead of spanning the whole row to save space). */
+.admin-area .social-add-row{ display:flex; align-items:center; justify-content:flex-start; gap:8px; padding:4px 14px 14px; }
+/* A real checkbox, hidden the same way .theme-card's radio is elsewhere in
+   this file (present and functional, just not the thing rendered) paired
+   with a styled sibling - here the RSS glyph itself, filled/accented when
+   checked instead of a separate label+checkbox pair. */
+.admin-area .rss-toggle{ display:inline-flex; align-items:center; margin:0; cursor:pointer; }
+.admin-area .rss-toggle input{ position:absolute; opacity:0; width:0; height:0; }
+.admin-area .rss-toggle-icon{ display:flex; align-items:center; justify-content:center; width:26px; height:26px; border:1px solid var(--line); color:var(--ink-faint); transition:color .15s,border-color .15s,background .15s; }
+.admin-area .rss-toggle-icon svg{ width:14px; height:14px; fill:currentColor; }
+.admin-area .rss-toggle:hover .rss-toggle-icon{ color:var(--ink); }
+.admin-area .rss-toggle input:checked + .rss-toggle-icon{ color:var(--accent); border-color:var(--accent); background:var(--accent-wash); }
+.admin-area .rss-toggle input:focus-visible + .rss-toggle-icon{ outline:1px solid var(--accent); outline-offset:1px; }
+/* Same divider-between-two-related-fields issue as the social rows above,
+   here between Newsletter Subscribe's toggle and its button-label field -
+   one setting's two halves, not two unrelated fields, so no line between
+   them; padding trimmed on both sides of the seam to close the gap the
+   divider used to visually justify. */
+.admin-area .newsletter-enable-row{ border-bottom:0; padding-bottom:4px; }
+.admin-area .newsletter-label-row{ padding-top:4px; }
+/* Same fix, applied where a group's one-and-only field is its last child:
+   the field's own .spec-field border-bottom sat right against the group's
+   own border-bottom (.ls-spec-group) an instant later, doubling the line
+   for no reason - nothing but the group boundary follows it. */
+.admin-area .footer-copyright-row{ border-bottom:0; }
+.admin-area .social-add-btn{ height:26px; min-height:26px; padding:0 10px; font-size:11px; }
+.admin-area .social-add-btn[hidden]{ display:none; }
+
+.admin-area .translation-section{ border:1px solid var(--line); border-radius:10px; margin-bottom:14px; overflow:hidden; background:var(--panel); }
+.admin-area .translation-section summary{ padding:12px 16px; font-weight:800; cursor:pointer; list-style:none; background:var(--panel-2); }
+.admin-area .translation-section summary::-webkit-details-marker{ display:none; }
+.admin-area .translation-section .translation-table{ margin:0; }
+.admin-area .translation-section .translation-table th,.admin-area .translation-section .translation-table td{ padding:10px 16px; }

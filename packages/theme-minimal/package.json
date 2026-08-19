@@ -1,0 +1,11 @@
+{
+  "id": "erased.theme-minimal",
+  "type": "theme",
+  "name": "Minimal",
+  "version": "1.1.0",
+  "requires": "0.5.0",
+  "author": "ERASED CMS",
+  "description": "True monochrome - pure black and white only, no accent colour anywhere, flattened shadows.",
+  "theme_scope": "website",
+  "assets": "theme.css"
+}

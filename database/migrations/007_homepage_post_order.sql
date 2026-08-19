@@ -1,0 +1,1 @@
+ALTER TABLE content ADD COLUMN IF NOT EXISTS homepage_order INT UNSIGNED NOT NULL DEFAULT 0 AFTER featured_media_id;

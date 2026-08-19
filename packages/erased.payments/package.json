@@ -1,0 +1,23 @@
+{
+  "id": "erased.payments",
+  "type": "module",
+  "name": "ERASED Payments",
+  "version": "1.1.0",
+  "requires": "0.3.0",
+  "author": "ERASED CMS",
+  "description": "Payment provider configuration, credentials, and transaction history. Stores provider settings that ERASED Commerce and other checkout integrations read at checkout time.",
+  "pricing": { "model": "paid", "price_minor": 3900, "currency": "USD" },
+  "permissions": [
+    { "id": "payments.manage", "label": "Manage Payments" }
+  ],
+  "services": {
+    "erased.payments.admin": { "file": "src/Admin/PaymentsAdminRoute.php", "class": "ErasedPayments\\Admin\\PaymentsAdminRoute", "shared": true }
+  },
+  "admin_routes": [
+    { "id": "payments.settings", "path": "/admin/payments", "permission": "payments.manage", "service_id": "erased.payments.admin" }
+  ],
+  "admin_menu": [
+    { "label": "Payments", "path": "/admin/payments", "permission": "payments.manage", "group": "Plugins", "sheet_code": "PL-02" }
+  ],
+  "lifecycle": { "file": "src/Lifecycle.php", "class": "ErasedPayments\\Lifecycle" }
+}

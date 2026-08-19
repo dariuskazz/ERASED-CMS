@@ -1,0 +1,37 @@
+services:
+  db:
+    image: docker.io/library/mariadb:11
+    environment:
+      MARIADB_DATABASE: erased_cms
+      MARIADB_USER: erased
+      MARIADB_PASSWORD: erased_local_password
+      MARIADB_ROOT_PASSWORD: erased_local_root_password
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      ERASED_DB_HOST: db
+      ERASED_DB_NAME: erased_cms
+      ERASED_DB_USER: erased
+      ERASED_DB_PASS: erased_local_password
+    volumes:
+      - app_storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
+    name: erased-cms_db_data
+
+  app_storage:
+    name: erased-cms_app_storage

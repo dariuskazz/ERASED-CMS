@@ -1,0 +1,22 @@
+/* Glass - glassmorphism. Panels are translucent + blurred rather than
+   solid, floating over a soft violet-to-blue gradient body background. */
+body.theme-dark-green:not(.admin-area){
+  color-scheme: dark;
+  --bg:#1b1035; --panel:rgba(255,255,255,.08); --panel-2:rgba(255,255,255,.05); --line:rgba(255,255,255,.18);
+  --text:#f3f0ff; --muted:#c7bfe0;
+  --control:rgba(255,255,255,.10); --control-hover:rgba(255,255,255,.16);
+  --danger:#ff6b6b; --warning:#ffd166;
+  --green:#a78bfa;
+  background: linear-gradient(135deg, #2b1055 0%, #4a3a8f 45%, #6f97d6 75%, #1b1035 100%);
+  background-attachment: fixed;
+  color:#f3f0ff;
+}
+body.theme-dark-green:not(.admin-area) header,
+body.theme-dark-green:not(.admin-area) .card,
+body.theme-dark-green:not(.admin-area) .panel,
+body.theme-dark-green:not(.admin-area) .modal-box,
+body.theme-dark-green:not(.admin-area) .frontend-adminbar{
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border:1px solid var(--line);
+}

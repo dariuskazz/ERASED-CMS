@@ -1,0 +1,15 @@
+RewriteEngine On
+
+# Block direct access to stray backup/snapshot files that don't end in .php
+# and would otherwise be served as plain text (source disclosure).
+<FilesMatch "(?i)\.(bak|bak2|backup|orig|old|swp|stage\d*-backup|toolbar-backup)$|\.before-[^/]+$|\.missing-[^/]+$">
+    Require all denied
+</FilesMatch>
+
+# Normalize the admin dashboard trailing slash.
+RewriteCond %{THE_REQUEST} \s/+admin/+[?\s] [NC]
+RewriteRule ^admin/+$ /admin [R=302,L,NE]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]

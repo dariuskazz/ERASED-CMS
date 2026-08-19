@@ -1,0 +1,5 @@
+-- ERASED CMS comments and anti-bot controls
+ALTER TABLE content ADD COLUMN IF NOT EXISTS comments_enabled TINYINT(1) NOT NULL DEFAULT 1 AFTER seo_description;
+ALTER TABLE comments ADD COLUMN IF NOT EXISTS ip_address VARCHAR(64) NOT NULL DEFAULT '' AFTER status;
+ALTER TABLE comments ADD COLUMN IF NOT EXISTS user_agent VARCHAR(500) NOT NULL DEFAULT '' AFTER ip_address;
+ALTER TABLE comments ADD COLUMN IF NOT EXISTS spam_reason VARCHAR(255) NOT NULL DEFAULT '' AFTER user_agent;

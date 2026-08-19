@@ -1,0 +1,20 @@
+/* Cyberpunk - a quiet, dark grey-green terminal register. Deliberately
+   muted, not neon: no violet, no hot-pink, no glow gradients - a low-light
+   workspace palette with a subdued forest-green accent instead of the
+   site's default bright green. */
+body.theme-dark-green:not(.admin-area){
+  color-scheme: dark;
+  --bg:#121613; --panel:#181d19; --panel-2:#1f2621; --line:#2c3730;
+  --text:#dce8e0; --muted:#7f9488;
+  --control:#1c2320; --control-hover:#242c27;
+  --danger:#a6453d; --warning:#8a7331;
+  --green:#4f8f66;
+  background:#121613;
+  color:#dce8e0;
+}
+body.theme-dark-green:not(.admin-area) .card,
+body.theme-dark-green:not(.admin-area) .panel,
+body.theme-dark-green:not(.admin-area) .modal-box{
+  border-color: color-mix(in srgb, var(--green) 30%, var(--line));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--green) 10%, transparent), 0 10px 24px rgba(0,0,0,.4);
+}

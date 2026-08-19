@@ -1,0 +1,72 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f4f4f4;
+  color: #171717;
+  font-family: system-ui, sans-serif;
+}
+
+.erased-editor-demo {
+  width: min(900px, calc(100% - 32px));
+  margin: 48px auto;
+}
+
+.erased-editor-demo h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.erased-lexical-editor {
+  min-height: 360px;
+  padding: 32px;
+  overflow-wrap: break-word;
+  background: #ffffff;
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgb(0 0 0 / 8%);
+  font-size: 18px;
+  line-height: 1.65;
+  outline: none;
+}
+
+.erased-lexical-editor:focus {
+  border-color: #737373;
+  box-shadow: 0 0 0 3px rgb(0 0 0 / 8%);
+}
+
+.erased-editor__paragraph {
+  margin: 0 0 1em;
+}
+
+.erased-editor__heading {
+  line-height: 1.25;
+}
+
+.erased-editor__heading--h1 {
+  font-size: 2rem;
+}
+
+.erased-editor__heading--h2 {
+  font-size: 1.5rem;
+}
+
+.erased-editor__quote {
+  margin-left: 0;
+  padding-left: 1rem;
+  border-left: 4px solid currentColor;
+}
+
+.erased-editor__text--bold {
+  font-weight: 700;
+}
+
+.erased-editor__text--italic {
+  font-style: italic;
+}
+
+.erased-editor__text--underline {
+  text-decoration: underline;
+}

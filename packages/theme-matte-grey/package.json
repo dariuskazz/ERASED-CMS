@@ -1,0 +1,11 @@
+{
+  "id": "erased.theme-matte-grey",
+  "type": "theme",
+  "name": "Matte Grey",
+  "version": "1.0.2",
+  "requires": "0.5.0",
+  "author": "ERASED CMS",
+  "description": "A flat, desaturated mid-grey theme - no gloss, no colour cast, deliberately quiet.",
+  "theme_scope": "website",
+  "assets": "theme.css"
+}

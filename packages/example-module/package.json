@@ -1,0 +1,23 @@
+{
+  "id": "erased.example-module",
+  "type": "module",
+  "name": "Example Module",
+  "version": "0.1.0",
+  "requires": "0.3.0",
+  "author": "ERASED CMS",
+  "description": "A minimal working example package: one migration, one permission, one admin screen. Install it to see how the Plugin API fits together end to end, or copy it as a starting point for a new package.",
+  "permissions": [
+    { "id": "example.manage", "label": "Manage Example Notes" }
+  ],
+  "services": {
+    "erased.example.admin": { "file": "src/AdminRoute.php", "class": "ErasedExample\\AdminRoute", "shared": true }
+  },
+  "admin_routes": [
+    { "id": "example.notes.list", "path": "/admin/example/notes", "permission": "example.manage", "service_id": "erased.example.admin" },
+    { "id": "example.notes.delete", "path": "/admin/example/notes/{id}/delete", "permission": "example.manage", "service_id": "erased.example.admin" }
+  ],
+  "admin_menu": [
+    { "label": "Example Notes", "path": "/admin/example/notes", "permission": "example.manage", "group": "Example", "sheet_code": "EX-01" }
+  ],
+  "lifecycle": { "file": "src/Lifecycle.php", "class": "ErasedExample\\Lifecycle" }
+}

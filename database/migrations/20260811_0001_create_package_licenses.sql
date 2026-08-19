@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS package_licenses (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    package_id VARCHAR(190) NOT NULL,
+    license_key VARCHAR(255) NOT NULL,
+    activated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY package_licenses_package_id_unique (package_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
