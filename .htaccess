@@ -5,9 +5,20 @@ RewriteEngine On
 # ambiguity to protect against for the empty path specifically, so it's
 # rewritten unconditionally.
 RewriteRule ^$ public/ [L]
-# Real files sitting at the document root (install.php, login.php, admin.php -
-# the rewrite-independent entry points) must be served directly, not
-# rewritten into public/ where they don't exist.
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule (.*) public/$1 [L]
+
+# Real files/dirs sitting at the document root (install.php, login.php,
+# admin.php - the rewrite-independent entry points) are served as-is.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Real files under public/ (CSS, JS, images) are served directly - tested
+# against the actual target path rather than the equivalent check re-run in
+# public/.htaccess after an internal rewrite, since that second check proved
+# unreliable on at least one real LiteSpeed host (see docs/HANDOFF.md).
+RewriteCond %{DOCUMENT_ROOT}/public/$1 -f [OR]
+RewriteCond %{DOCUMENT_ROOT}/public/$1 -d
+RewriteRule ^(.*)$ public/$1 [L]
+
+# Everything else is a virtual route handled by the app.
+RewriteRule ^(.*)$ public/index.php [L]
